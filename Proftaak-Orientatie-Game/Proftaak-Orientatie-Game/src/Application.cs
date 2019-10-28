@@ -22,7 +22,9 @@ namespace Proftaak_Orientatie_Game
         const float fixedDeltaTime = 1f / 60f;
         private float fixedTime = 0f;
 
-        Application(IGameState startingState)
+        private Color clearColor { get; set; } = new Color(133, 108, 161, 255);
+
+    Application(IGameState startingState)
         {
             _currentGameState = startingState;
             _currentGameState.OnCreate();
@@ -71,7 +73,7 @@ namespace Proftaak_Orientatie_Game
                 }
 
                 _window.Display();
-                _window.Clear();
+                _window.Clear(clearColor);
             }
         }
     }
