@@ -8,5 +8,9 @@ namespace Proftaak_Orientatie_Game.World
 {
     class Level
     {
+        public Level()
+        {
+
+        }
     }
 }
