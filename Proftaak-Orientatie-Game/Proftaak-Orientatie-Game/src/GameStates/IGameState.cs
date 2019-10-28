@@ -24,7 +24,7 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public bool IsNewStateRequested()
         {
-            return _requestedState == null;
+            return _requestedState != null;
         }
 
         public IGameState GetRequestedState()
