@@ -17,6 +17,9 @@ namespace Proftaak_Orientatie_Game.GameStates
         public override void OnUpdate(float deltatime)
         {}
 
+        public override void OnFixedUpdate(float fixedDeltaTime)
+        {}
+
         public override void OnDraw(float deltatime, RenderWindow window)
         {
             CircleShape shape = new CircleShape(100.0f);
