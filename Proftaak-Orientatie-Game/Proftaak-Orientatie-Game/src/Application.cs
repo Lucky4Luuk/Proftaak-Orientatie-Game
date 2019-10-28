@@ -36,7 +36,7 @@ namespace Proftaak_Orientatie_Game
 
         void Run()
         {
-            _window = new RenderWindow(new VideoMode(1280, 720), "Gayme");
+            _window = new RenderWindow(new VideoMode(1280, 720), "*insert epic name here*");
 
             //Register events
             _window.Closed += new EventHandler(CloseWindow);
