@@ -14,6 +14,7 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public abstract void OnCreate();
         public abstract void OnUpdate(float deltatime);
+        public abstract void OnFixedUpdate(float fixedDeltaTime);
         public abstract void OnDraw(float deltatime, RenderWindow window);
         public abstract void OnDestroy();
 
