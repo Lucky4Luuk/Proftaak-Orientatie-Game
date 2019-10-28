@@ -55,6 +55,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Entities\EntityManager.cs" />
+    <Compile Include="src\Entities\IEntity.cs" />
+    <Compile Include="src\Entities\Player.cs" />
     <Compile Include="src\GameStates\Game.cs" />
     <Compile Include="src\GameStates\IGameState.cs" />
     <Compile Include="src\Application.cs" />
@@ -75,6 +78,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="csfml-window.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\textures\player.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -71,6 +71,7 @@ namespace Proftaak_Orientatie_Game
                 }
 
                 _window.Display();
+                _window.Clear();
             }
         }
     }
