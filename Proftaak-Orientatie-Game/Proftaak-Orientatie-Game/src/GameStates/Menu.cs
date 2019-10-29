@@ -28,6 +28,7 @@ namespace Proftaak_Orientatie_Game.GameStates
                 "Server", font
             );
             _playButton.OnPress += (object sender, EventArgs args) => { RequestNewState(new Game()); };
+            _serverButton.OnPress += (object send, EventArgs args) => { RequestNewState(new Server()); };
         }
 
         public override void OnUpdate(float deltatime)
