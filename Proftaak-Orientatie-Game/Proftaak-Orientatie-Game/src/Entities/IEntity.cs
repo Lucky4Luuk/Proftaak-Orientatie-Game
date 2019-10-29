@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SFML.Graphics;
+using SFML.System;
 
 namespace Proftaak_Orientatie_Game.Entities
 {
@@ -11,9 +12,17 @@ namespace Proftaak_Orientatie_Game.Entities
     {
         private bool _delete = false;
 
-        public abstract void OnUpdate(float deltatime);
-        public abstract void OnFixedUpdate(float fixedDeltatime);
+        protected bool canCollide = false;
+        protected bool canBeHitByBullet = false;
+
+        public abstract void OnUpdate(float deltatime, EntityManager entityManager, RenderWindow window);
+        public abstract void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, RenderWindow window);
         public abstract void OnDraw(float deltatime, RenderWindow window);
+
+
+
+        public abstract Vector2f getPosition();
+        public abstract Vector2f getSize();
 
         public void MarkForDeletion()
         {

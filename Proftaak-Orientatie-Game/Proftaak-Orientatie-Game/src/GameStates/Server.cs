@@ -25,12 +25,12 @@ namespace Proftaak_Orientatie_Game.GameStates
             //_curLevel = new TileMap("res/maps/test.tmx");
         }
 
-        public override void OnUpdate(float deltatime)
+        public override void OnUpdate(float deltatime, RenderWindow window)
         {
             //_entityManager.Update(deltatime);
         }
 
-        public override void OnFixedUpdate(float fixedDeltaTime)
+        public override void OnFixedUpdate(float fixedDeltaTime, RenderWindow window)
         {
             //_entityManager.FixedUpdate(fixedDeltaTime);
         }

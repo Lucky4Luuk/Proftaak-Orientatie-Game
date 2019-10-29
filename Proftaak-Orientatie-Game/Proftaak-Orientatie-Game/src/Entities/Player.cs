@@ -16,8 +16,7 @@ namespace Proftaak_Orientatie_Game.Entities
         private readonly IPlayerController _playerController;
 
         enum Direction { DOWN = 0, RIGHT, LEFT, UP }
-        private readonly Animation[] _animations = new Animation[]
-        {
+        private readonly Animation[] _animations = {
             new Animation(16, 16, 32, new [] {0,1}),
             new Animation(16, 16, 32, new [] {2,3}),
             new Animation(16, 16, 32, new [] {4,5}),
@@ -28,36 +27,58 @@ namespace Proftaak_Orientatie_Game.Entities
 
         public Player(Vector2f spawnPositon, IPlayerController playerController)
         {
+            canBeHitByBullet = true;
+
             _playerController = playerController;
 
             Texture tex = new Texture("res/textures/player.png");
             _sprite = new Sprite(tex) {
                 Position = spawnPositon,
                 TextureRect = _animations[(int)Direction.DOWN].GetShape(),
-                Scale = new Vector2f(3.0f, 3.0f)
+                Scale = new Vector2f(3.0f, 3.0f),
+                Origin = new Vector2f(_animations[0].GetShape().Width * 0.5f, _animations[0].GetShape().Height * 0.5f)
             };
             _currentDirection = Direction.DOWN;
         }
 
-        public override void OnUpdate(float deltatime)
+        public override void OnUpdate(float deltatime, EntityManager entityManager, RenderWindow window)
         {
+
             Direction previousDirection = _currentDirection;
 
             // Update the player controller
             _playerController.Position = _sprite.Position;
-            _playerController.Update(deltatime);
+            _playerController.Update(window, deltatime);
             _sprite.Position = _playerController.Position;
 
             // Update the direction
-            if (_playerController.Velocity.X > 0.0f)
-                _currentDirection = Direction.RIGHT;
-            else if(_playerController.Velocity.X < 0.0f)
-                _currentDirection = Direction.LEFT;
+            float angle = (float)-Math.Atan2(_playerController.Direction.Y, _playerController.Direction.X);
+            while (angle < 0.0f)
+                angle += 2.0f * (float)Math.PI;
 
-            if (_playerController.Velocity.Y > 0.0f)
-                _currentDirection = Direction.DOWN;
-            else if (_playerController.Velocity.Y < 0.0f)
+            while(angle > 2.0f * (float)Math.PI)
+                angle -= 2.0f * (float)Math.PI;
+
+            _currentDirection = Direction.RIGHT;
+            if (angle > Math.PI * 0.25f)
                 _currentDirection = Direction.UP;
+            if (angle > Math.PI * 0.75f)
+                _currentDirection = Direction.LEFT;
+            if (angle > Math.PI * 1.25f)
+                _currentDirection = Direction.DOWN;
+            if (angle > Math.PI * 1.75f)
+                _currentDirection = Direction.RIGHT;
+
+            Console.WriteLine(angle);
+
+            // Shoot a bullet
+            float speed = (float)Math.Sqrt(_playerController.Velocity.X * _playerController.Velocity.X +
+                                           _playerController.Velocity.Y * _playerController.Velocity.Y);
+
+            if (Keyboard.IsKeyPressed(Keyboard.Key.Space))
+            {
+                entityManager.ShootBullet(new Bullet(_sprite.Position, _playerController.Direction), 200.0f);
+            }
 
             // Update animation
             if (_playerController.Velocity.X == 0.0f && _playerController.Velocity.Y == 0.0f)
@@ -70,27 +91,33 @@ namespace Proftaak_Orientatie_Game.Entities
                 {
                     _animations[(int) _currentDirection].SetFrame(0.0f);
                 }
-
-                float speed = (float) Math.Sqrt(_playerController.Velocity.X * _playerController.Velocity.X +
-                                                _playerController.Velocity.Y * _playerController.Velocity.Y);
-
                 _animations[(int) _currentDirection].Update(deltatime * speed * 2.0f);
             }
 
             _sprite.TextureRect = _animations[(int)_currentDirection].GetShape();
         }
 
-        public override void OnFixedUpdate(float fixedDeltatime)
+        public override void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, RenderWindow window)
         {
             // Update the player controller
             _playerController.Position = _sprite.Position;
-            _playerController.FixedUpdate(fixedDeltatime);
+            _playerController.FixedUpdate(window, fixedDeltatime);
             _sprite.Position = _playerController.Position;
         }
 
         public override void OnDraw(float deltatime, RenderWindow window)
         {
             window.Draw(_sprite);
+        }
+
+        public override Vector2f getPosition()
+        {
+            return _sprite.Position;
+        }
+
+        public override Vector2f getSize()
+        {
+            return new Vector2f(_sprite.GetLocalBounds().Width, _sprite.GetLocalBounds().Height);
         }
     }
 }

@@ -13,8 +13,8 @@ namespace Proftaak_Orientatie_Game.GameStates
         private IGameState _requestedState = null;
 
         public abstract void OnCreate();
-        public abstract void OnUpdate(float deltatime);
-        public abstract void OnFixedUpdate(float fixedDeltaTime);
+        public abstract void OnUpdate(float deltatime, RenderWindow window);
+        public abstract void OnFixedUpdate(float fixedDeltaTime, RenderWindow window);
         public abstract void OnDraw(float deltatime, RenderWindow window);
         public abstract void OnDestroy();
 

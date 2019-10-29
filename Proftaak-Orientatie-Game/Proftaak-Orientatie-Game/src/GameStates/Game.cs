@@ -35,14 +35,14 @@ namespace Proftaak_Orientatie_Game.GameStates
             Console.WriteLine("Connected!");
         }
 
-        public override void OnUpdate(float deltatime)
+        public override void OnUpdate(float deltatime, RenderWindow window)
         {
-            _entityManager.Update(deltatime);
+            _entityManager.Update(deltatime, window);
         }
 
-        public override void OnFixedUpdate(float fixedDeltaTime)
+        public override void OnFixedUpdate(float fixedDeltaTime, RenderWindow window)
         {
-            _entityManager.FixedUpdate(fixedDeltaTime);
+            _entityManager.FixedUpdate(fixedDeltaTime, window);
         }
 
         public override void OnDraw(float deltatime, RenderWindow window)

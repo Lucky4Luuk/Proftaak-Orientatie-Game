@@ -54,11 +54,11 @@ namespace Proftaak_Orientatie_Game
 
                 if (_window.HasFocus())
                 {
-                    _currentGameState.OnUpdate(deltatime);
+                    _currentGameState.OnUpdate(deltatime, _window);
                     fixedTime += deltatime;
                     while (fixedTime > fixedDeltaTime)
                     {
-                        _currentGameState.OnFixedUpdate(fixedDeltaTime);
+                        _currentGameState.OnFixedUpdate(fixedDeltaTime, _window);
                         fixedTime -= fixedDeltaTime;
                     }
                 }

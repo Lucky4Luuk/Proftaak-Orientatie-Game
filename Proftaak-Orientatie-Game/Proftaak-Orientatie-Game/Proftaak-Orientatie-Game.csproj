@@ -61,6 +61,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Entities\Bullet.cs" />
+    <Compile Include="src\Entities\BulletTrail.cs" />
     <Compile Include="src\Entities\EntityManager.cs" />
     <Compile Include="src\Entities\IEntity.cs" />
     <Compile Include="src\Entities\IPlayerController.cs" />
