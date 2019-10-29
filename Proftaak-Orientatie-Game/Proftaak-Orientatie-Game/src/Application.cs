@@ -14,7 +14,7 @@ namespace Proftaak_Orientatie_Game
     {
         static void Main(string[] args)
         {
-            new Application(new Game()).Run();
+            new Application(new Menu()).Run();
         }
 
         private IGameState _currentGameState;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SFML.Graphics;
 using SFML.System;
 
-namespace Proftaak_Orientatie_Game.src.SpriteUtils
+namespace Proftaak_Orientatie_Game.SpriteUtils
 {
     class Animation
     {

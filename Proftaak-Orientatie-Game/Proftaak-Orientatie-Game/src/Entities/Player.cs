@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Proftaak_Orientatie_Game.src.SpriteUtils;
+using Proftaak_Orientatie_Game.SpriteUtils;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;

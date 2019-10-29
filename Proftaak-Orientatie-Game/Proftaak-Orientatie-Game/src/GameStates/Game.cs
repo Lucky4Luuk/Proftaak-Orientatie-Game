@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.Entities;
 using Proftaak_Orientatie_Game.GameStates;
+using Proftaak_Orientatie_Game.UI;
 using Proftaak_Orientatie_Game.World;
 using SFML.Graphics;
 using SFML.System;
