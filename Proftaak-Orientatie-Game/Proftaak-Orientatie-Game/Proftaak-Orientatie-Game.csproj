@@ -70,6 +70,8 @@
     <Compile Include="src\GameStates\IGameState.cs" />
     <Compile Include="src\Application.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\GameStates\Server.cs" />
+    <Compile Include="src\Networking\InboundConnection.cs" />
     <Compile Include="src\World\Level.cs" />
     <Compile Include="src\World\TileMap.cs" />
   </ItemGroup>

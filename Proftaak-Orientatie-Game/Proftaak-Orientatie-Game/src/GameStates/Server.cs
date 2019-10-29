@@ -13,44 +13,35 @@ using SFML.System;
 
 namespace Proftaak_Orientatie_Game.GameStates
 {
-    class Game : IGameState
+    class Server : IGameState
     {
         private EntityManager _entityManager;
-        private Level _curLevel;
-
-        private IPAddress ipAd = IPAddress.Parse("127.0.0.1");
-        private TcpClient tcpClient;
 
         public override void OnCreate()
         {
             _entityManager = new EntityManager();
-            _entityManager.Add(new Player(new KeyboardController()));
+            //_entityManager.Add(new Player(new KeyboardController()));
 
-            _curLevel = new TileMap("res/maps/test.tmx");
-
-            tcpClient = new TcpClient();
-            Console.WriteLine("Connecting...");
-            tcpClient.Connect(ipAd, 8001);
-            Console.WriteLine("Connected!");
+            //_curLevel = new TileMap("res/maps/test.tmx");
         }
 
         public override void OnUpdate(float deltatime)
         {
-            _entityManager.Update(deltatime);
+            //_entityManager.Update(deltatime);
         }
 
         public override void OnFixedUpdate(float fixedDeltaTime)
         {
-            _entityManager.FixedUpdate(fixedDeltaTime);
+            //_entityManager.FixedUpdate(fixedDeltaTime);
         }
 
         public override void OnDraw(float deltatime, RenderWindow window)
         {
-            _curLevel.OnDraw(deltatime, window);
-            _entityManager.Draw(deltatime, window);
+            //_curLevel.OnDraw(deltatime, window);
+            //_entityManager.Draw(deltatime, window);
         }
 
         public override void OnDestroy()
-        {}
+        { }
     }
 }
