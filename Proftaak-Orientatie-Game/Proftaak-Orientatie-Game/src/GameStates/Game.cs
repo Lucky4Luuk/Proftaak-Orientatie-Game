@@ -24,7 +24,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         public override void OnCreate()
         {
             _entityManager = new EntityManager();
-            _entityManager.Add(new Player(new KeyboardController()));
+            _entityManager.Add(new Player(new Vector2f(300.0f, 300.0f), new KeyboardController()));
 
             _curLevel = new TileMap("res/maps/test.tmx");
 

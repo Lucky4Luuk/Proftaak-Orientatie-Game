@@ -31,7 +31,8 @@ namespace Proftaak_Orientatie_Game.Entities
             dx *= SPEED * deltatime;
             dy *= SPEED * deltatime;
 
-            position = new Vector2f(position.X + dx, position.Y + dy);
+            Position = new Vector2f(Position.X + dx, Position.Y + dy);
+            Velocity = new Vector2f(dx, dy);
         }
 
         public override void Update(float fixedDeltatime)
