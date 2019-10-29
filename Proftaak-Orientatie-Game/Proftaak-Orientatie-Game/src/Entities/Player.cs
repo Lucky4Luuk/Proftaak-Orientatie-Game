@@ -16,7 +16,7 @@ namespace Proftaak_Orientatie_Game.Entities
         private readonly IPlayerController _playerController;
 
         enum Direction { DOWN = 0, RIGHT, LEFT, UP }
-        private Animation[] _animations = new Animation[]
+        private readonly Animation[] _animations = new Animation[]
         {
             new Animation(16, 16, 32, new [] {0,1}),
             new Animation(16, 16, 32, new [] {2,3}),
@@ -75,9 +75,9 @@ namespace Proftaak_Orientatie_Game.Entities
                                                 _playerController.Velocity.Y * _playerController.Velocity.Y);
 
                 _animations[(int) _currentDirection].Update(deltatime * speed * 2.0f);
-
-                _sprite.TextureRect = _animations[(int) _currentDirection].GetShape();
             }
+
+            _sprite.TextureRect = _animations[(int)_currentDirection].GetShape();
         }
 
         public override void OnFixedUpdate(float fixedDeltatime)
