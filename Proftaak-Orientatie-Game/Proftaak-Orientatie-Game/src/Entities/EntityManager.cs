@@ -5,7 +5,7 @@ namespace Proftaak_Orientatie_Game.Entities
 {
     class EntityManager
     {
-        private readonly List<IEntity> _entities = new List<IEntity>();
+        public readonly List<IEntity> _entities = new List<IEntity>();
         private readonly Queue<IEntity> _buffer =new Queue<IEntity>();
 
         public void ShootBullet(Bullet bullet, float range)

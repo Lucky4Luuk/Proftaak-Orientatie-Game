@@ -9,5 +9,7 @@ namespace Proftaak_Orientatie_Game.src.Networking
     enum PACKET_TYPES
     {
         SET_CLIENT_ID = 0,
+        CLIENT_POSITION = 1,
+        ENTITY_POSITION = 2,
     }
 }
