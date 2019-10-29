@@ -12,9 +12,12 @@ namespace Proftaak_Orientatie_Game.Entities
     class Player : IEntity
     {
         private readonly Sprite _sprite;
+        private readonly IPlayerController _playerController;
 
-        public Player()
+        public Player(IPlayerController playerController)
         {
+            _playerController = playerController;
+
             Texture tex = new Texture("res/textures/player.png");
             _sprite = new Sprite(tex)
             {
@@ -24,31 +27,16 @@ namespace Proftaak_Orientatie_Game.Entities
 
         public override void OnUpdate(float deltatime)
         {
+            _playerController.position = _sprite.Position;
+            _playerController.Update(deltatime);
+            _sprite.Position = _playerController.position;
         }
 
         public override void OnFixedUpdate(float fixedDeltatime)
         {
-            float deltaX = 0.0f;
-            if (Keyboard.IsKeyPressed(Keyboard.Key.A))
-                deltaX -= 8.5f;
-
-            if (Keyboard.IsKeyPressed(Keyboard.Key.D))
-                deltaX += 8.5f;
-
-            float deltaY = 0.0f;
-            if (Keyboard.IsKeyPressed(Keyboard.Key.W))
-                deltaY -= 8.5f;
-
-            if (Keyboard.IsKeyPressed(Keyboard.Key.S))
-                deltaY += 8.5f;
-
-            if (deltaX != 0.0f && deltaY != 0.0f)
-            {
-                deltaX *= 0.73f;
-                deltaY *= 0.73f;
-            }
-
-            _sprite.Position = new Vector2f(_sprite.Position.X + deltaX, _sprite.Position.Y + deltaY);
+            _playerController.position = _sprite.Position;
+            _playerController.FixedUpdate(fixedDeltatime);
+            _sprite.Position = _playerController.position;
         }
 
         public override void OnDraw(float deltatime, RenderWindow window)

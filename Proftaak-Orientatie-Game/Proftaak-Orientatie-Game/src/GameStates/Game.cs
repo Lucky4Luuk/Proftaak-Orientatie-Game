@@ -17,7 +17,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         public override void OnCreate()
         {
             _entityManager = new EntityManager();
-            _entityManager.Add(new Player());
+            _entityManager.Add(new Player(new KeyboardController()));
         }
 
         public override void OnUpdate(float deltatime)

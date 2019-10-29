@@ -63,6 +63,8 @@
   <ItemGroup>
     <Compile Include="src\Entities\EntityManager.cs" />
     <Compile Include="src\Entities\IEntity.cs" />
+    <Compile Include="src\Entities\IPlayerController.cs" />
+    <Compile Include="src\Entities\KeyboardController.cs" />
     <Compile Include="src\Entities\Player.cs" />
     <Compile Include="src\GameStates\Game.cs" />
     <Compile Include="src\GameStates\IGameState.cs" />
