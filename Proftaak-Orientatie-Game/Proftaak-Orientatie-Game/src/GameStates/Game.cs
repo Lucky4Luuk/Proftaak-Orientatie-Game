@@ -51,7 +51,7 @@ namespace Proftaak_Orientatie_Game.GameStates
 
             debugText = new Text("UNDEFINED", font);
 
-          /*  socket = new Socket(ipAd.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            socket = new Socket(ipAd.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             Console.WriteLine("Connecting...");
             socket.Connect(new IPEndPoint(ipAd, 8001));
             Console.WriteLine("Connected!");
@@ -60,7 +60,7 @@ namespace Proftaak_Orientatie_Game.GameStates
             state.workSocket = socket;
 
             socket.BeginReceive(state.buffer, 0, 1024, 0, new AsyncCallback(ReadCallback), state);
-        */}
+        }
 
         public override void OnUpdate(float deltatime, RenderWindow window)
         {
