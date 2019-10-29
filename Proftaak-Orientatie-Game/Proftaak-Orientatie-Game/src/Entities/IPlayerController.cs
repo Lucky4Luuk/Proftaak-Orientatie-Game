@@ -9,7 +9,8 @@ namespace Proftaak_Orientatie_Game.Entities
 {
     abstract class IPlayerController
     {
-        public Vector2f position;
+        public Vector2f Position { get; set; }
+        public Vector2f Velocity { get; set; }
 
         public abstract void FixedUpdate(float fixedDeltatime);
         public abstract void Update(float deltatime);
