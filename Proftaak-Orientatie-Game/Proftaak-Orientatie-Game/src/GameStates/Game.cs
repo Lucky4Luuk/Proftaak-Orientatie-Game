@@ -70,6 +70,10 @@ namespace Proftaak_Orientatie_Game.GameStates
         public override void OnFixedUpdate(float fixedDeltaTime, RenderWindow window)
         {
             _entityManager.FixedUpdate(fixedDeltaTime, window);
+
+            Player player = _entityManager._entities.OfType<Player>().First();
+            Vector2f playerPos = player.getPosition();
+            Send(state.workSocket, "1:" + playerPos.X.ToString() + "-" + playerPos.Y.ToString());
         }
 
         public override void OnDraw(float deltatime, RenderWindow window)
@@ -128,7 +132,7 @@ namespace Proftaak_Orientatie_Game.GameStates
                     {
                         //All the data has been read from the client.
                         content = content.Substring(0, content.Length - 5);
-                        Console.WriteLine("Read {0} bytes from socket. \nData: {1}", content.Length, content);
+                        Console.WriteLine("Read {0} bytes from socket.\nData: {1}", content.Length, content);
                         OnPacket(content);
                     }
                     else
@@ -142,6 +146,36 @@ namespace Proftaak_Orientatie_Game.GameStates
             catch (Exception e)
             {
                 Console.WriteLine("Error occured while handling client: {0}", e);
+            }
+        }
+
+        private static void Send(Socket handler, String data)
+        {
+            //Convert the string data to byte data using ASCII encoding.
+            byte[] byteData = Encoding.ASCII.GetBytes(data + "<EOF>");
+
+            //Begin sending the data to the remote device.
+            handler.BeginSend(byteData, 0, byteData.Length, 0,
+                new AsyncCallback(SendCallback), handler);
+        }
+
+        private static void SendCallback(IAsyncResult ar)
+        {
+            try
+            {
+                //Retrieve the socket from the state object.
+                Socket handler = (Socket)ar.AsyncState;
+
+                //Complete sending the data to the remote device.
+                int bytesSent = handler.EndSend(ar);
+                Console.WriteLine("Sent {0} bytes to client.", bytesSent);
+
+                //handler.Shutdown(SocketShutdown.Both);
+                //handler.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
             }
         }
     }
