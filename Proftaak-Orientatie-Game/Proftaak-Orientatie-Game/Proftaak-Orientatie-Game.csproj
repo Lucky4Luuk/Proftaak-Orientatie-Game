@@ -75,6 +75,7 @@
     <Compile Include="src\GameStates\Menu.cs" />
     <Compile Include="src\GameStates\Server.cs" />
     <Compile Include="src\Networking\InboundConnection.cs" />
+    <Compile Include="src\Networking\PacketTypes.cs" />
     <Compile Include="src\SpriteUtils\Animation.cs" />
     <Compile Include="src\UI\Button.cs" />
     <Compile Include="src\World\Level.cs" />
