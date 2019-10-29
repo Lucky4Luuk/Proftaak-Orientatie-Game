@@ -10,7 +10,7 @@ namespace Proftaak_Orientatie_Game.Entities
 {
     class BulletTrail : IEntity
     {
-        private const float TOTAL_TIME = 1.0f;
+        private const float TOTAL_TIME = 0.25f;
         private float _time = TOTAL_TIME;
 
         private readonly VertexArray _line;
@@ -18,7 +18,7 @@ namespace Proftaak_Orientatie_Game.Entities
         public BulletTrail(Vector2f start, Vector2f stop)
         {
             _line = new VertexArray(PrimitiveType.LineStrip, 2);
-            _line[0] = new Vertex(start, new Color(255, 255, 255, (byte)((_time / TOTAL_TIME) * 255)));
+            _line[0] = new Vertex(start, new Color(255, 255, 255, 0));
             _line[1] = new Vertex(stop, new Color(255, 255, 255, (byte)((_time / TOTAL_TIME) * 255)));
         }
 
@@ -36,7 +36,7 @@ namespace Proftaak_Orientatie_Game.Entities
 
         public override void OnDraw(float deltatime, RenderWindow window)
         {
-            _line[0] = new Vertex(_line[0].Position, new Color(255, 255, 255, (byte)((_time / TOTAL_TIME) * 255)));
+            _line[0] = new Vertex(_line[0].Position, new Color(255, 255, 255, 0));
             _line[1] = new Vertex(_line[1].Position, new Color(255, 255, 255, (byte)((_time / TOTAL_TIME) * 255)));
             window.Draw(_line);
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.SpriteUtils;
 using SFML.Graphics;
@@ -12,6 +13,11 @@ namespace Proftaak_Orientatie_Game.Entities
 {
     class Player : IEntity
     {
+        private const float TOTAL_SHOOT_COOLDOWN = 0.4f;
+        private const float REPRESS_COOLDOWN_REDUCTION = 0.1f;
+        private float _shootCooldown;
+        private bool _isShootPressed;
+
         private readonly Sprite _sprite;
         private readonly IPlayerController _playerController;
 
@@ -69,16 +75,25 @@ namespace Proftaak_Orientatie_Game.Entities
             if (angle > Math.PI * 1.75f)
                 _currentDirection = Direction.RIGHT;
 
-            Console.WriteLine(angle);
-
             // Shoot a bullet
             float speed = (float)Math.Sqrt(_playerController.Velocity.X * _playerController.Velocity.X +
                                            _playerController.Velocity.Y * _playerController.Velocity.Y);
 
-            if (Keyboard.IsKeyPressed(Keyboard.Key.Space))
+            bool shoot = Keyboard.IsKeyPressed(Keyboard.Key.Space);
+
+            _shootCooldown -= deltatime;
+            if (_isShootPressed && !shoot)
+                _shootCooldown -= REPRESS_COOLDOWN_REDUCTION;
+
+            if (shoot && _shootCooldown <= 0.0f)
             {
-                entityManager.ShootBullet(new Bullet(_sprite.Position, _playerController.Direction), 200.0f);
+                entityManager.ShootBullet(new Bullet(_sprite.Position, _playerController.Direction), 800.0f);
+                _shootCooldown = TOTAL_SHOOT_COOLDOWN;
             }
+
+            Console.WriteLine(_shootCooldown);
+
+            _isShootPressed = shoot;
 
             // Update animation
             if (_playerController.Velocity.X == 0.0f && _playerController.Velocity.Y == 0.0f)
