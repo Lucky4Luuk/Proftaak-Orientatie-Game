@@ -15,7 +15,7 @@ namespace Proftaak_Orientatie_Game.Entities
     class Player : IEntity
     {
         public const float MAX_HEALTH = 100.0f;
-        public float Health { get; set; } = MAX_HEALTH * 0.5f;
+        public float Health { get; set; } = MAX_HEALTH;
 
         private const float TOTAL_SHOOT_COOLDOWN = 0.4f;
         private const float REPRESS_COOLDOWN_REDUCTION = 0.1f;
