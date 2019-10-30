@@ -33,7 +33,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         private EntityManager _entityManager;
         private Level _curLevel;
 
-        private IPAddress ipAd = IPAddress.Parse("145.93.105.11");
+        private IPAddress ipAd = IPAddress.Parse("145.93.106.113");
         private Socket socket;
 
         private int clientID = 0;
@@ -41,6 +41,8 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         private Text debugText;
         private Font font = new Font("res/fonts/defaultFont.ttf");
+
+        private Vector2f oldPlayerPos = new Vector2f(0f, 0f);
 
         public override void OnCreate()
         {
@@ -73,7 +75,13 @@ namespace Proftaak_Orientatie_Game.GameStates
 
             Player player = _entityManager._entities.OfType<Player>().First();
             Vector2f playerPos = player.getPosition();
-            Send(state.workSocket, "1:" + playerPos.X.ToString() + "-" + playerPos.Y.ToString());
+
+            if (Math.Abs(playerPos.X - oldPlayerPos.X) > 0.5 || Math.Abs(playerPos.Y - oldPlayerPos.Y) > 0.5)
+            {
+                oldPlayerPos = playerPos;
+                //Console.WriteLine("PLAYER POS: " + playerPos.X.ToString() + "-" + playerPos.Y.ToString());
+                Send(state.workSocket, "1:" + clientID + "-" + playerPos.X.ToString() + "-" + playerPos.Y.ToString() + "<EOF>");
+            }
         }
 
         public override void OnDraw(float deltatime, RenderWindow window)

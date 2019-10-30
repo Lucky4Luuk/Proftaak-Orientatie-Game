@@ -1,4 +1,5 @@
 ﻿using Proftaak_Orientatie_Game.Entities;
+using SFML.System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,10 +33,12 @@ namespace Proftaak_Orientatie_Game.src.Networking
     public class Client
     {
         public int clientID;
+        public Vector2f position;
 
         public Client(int id)
         {
             clientID = id;
+            position = new Vector2f(0f, 0f);
         }
     }
 
@@ -54,7 +57,7 @@ namespace Proftaak_Orientatie_Game.src.Networking
 
             IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
             //IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPAddress ipAddress = IPAddress.Parse("145.93.105.11");
+            IPAddress ipAddress = IPAddress.Parse("145.93.106.113");
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 8001);
 
             Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -86,6 +89,43 @@ namespace Proftaak_Orientatie_Game.src.Networking
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
+            }
+        }
+
+        public void OnPacket(string rawData)
+        {
+            try
+            {
+                string[] splitData = rawData.Split(':');
+                int identifier = Convert.ToInt32(splitData[0]);
+                string data = splitData[1];
+
+                if (identifier == (int)PACKET_TYPES.CLIENT_POSITION)
+                {
+                    string[] dataParts = data.Split('-');
+                    int cid = Convert.ToInt32(dataParts[0]);
+                    float x = float.Parse(dataParts[1]);
+                    float y = float.Parse(dataParts[2]);
+
+                    foreach (Client client in clients)
+                    {
+                        if (client.clientID == cid)
+                        {
+                            //Console.WriteLine("Client with id {0} has a new position: [{1}; {2}]", cid, x, y);
+                            client.position = new Vector2f(x, y);
+                        }
+                    }
+                }
+                //Console.WriteLine(data);
+                else
+                {
+                    //Console.WriteLine(rawData);
+                    return;
+                }
+            } catch (Exception ex)
+            {
+                //Console.WriteLine("Incorrect package received!");
+                return;
             }
         }
 
@@ -133,10 +173,25 @@ namespace Proftaak_Orientatie_Game.src.Networking
                     if (content.IndexOf("<EOF>") > -1)
                     {
                         //All the data has been read from the client.
-                        Console.WriteLine("Read {0} bytes from socket. \nData: {1}", content.Length, content);
+                        //content = content.Substring(0, content.Length - 5);
+                        //Console.WriteLine("Read {0} bytes from socket. \nData: {1}", content.Length, content);
+                        string[] splitContent = content.Replace("<EOF>", "~").Split('~');
 
-                        //Echo the data back to the client.
-                        Send(handler, content);
+                        foreach (string c in splitContent)
+                        {
+                            if (!(c == "" || c == " "))
+                            {
+                                //Console.WriteLine("Packet: {0}", c);
+                                OnPacket(c);
+                            }
+                        }
+
+                        Console.WriteLine("Done handling packets!");
+
+                        //Start listening for more packets
+                        state.buffer = new byte[StateObject.BufferSize];
+                        handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                            new AsyncCallback(ReadCallback), state);
                     }
                     else
                     {
