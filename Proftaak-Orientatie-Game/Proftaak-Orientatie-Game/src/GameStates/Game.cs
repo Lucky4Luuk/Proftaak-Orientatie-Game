@@ -33,7 +33,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         private EntityManager _entityManager;
         private Level _curLevel;
 
-        private IPAddress ipAd = IPAddress.Parse("145.93.105.11");
+        private IPAddress ipAd = IPAddress.Parse("127.0.0.1");
         private Socket socket;
 
         private int clientID = 0;
@@ -44,8 +44,11 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public override void OnCreate()
         {
+            Texture playerTexture = new Texture("res/textures/player.png");
+            Texture healthBarTexture = new Texture("res/textures/healthbar.png");
+
             _entityManager = new EntityManager();
-            _entityManager.Add(new Player(new Vector2f(300.0f, 300.0f), new KeyboardController()));
+            _entityManager.Add(new Player(new Vector2f(300.0f, 300.0f), new KeyboardController(), playerTexture, healthBarTexture, _entityManager));
 
             _curLevel = new TileMap("res/maps/test.tmx");
 
@@ -59,7 +62,7 @@ namespace Proftaak_Orientatie_Game.GameStates
             state = new StateObject();
             state.workSocket = socket;
 
-            socket.BeginReceive(state.buffer, 0, 1024, 0, new AsyncCallback(ReadCallback), state);
+            socket.BeginReceive(state.buffer, 0, 1024, 0, ReadCallback, state);
         }
 
         public override void OnUpdate(float deltatime, RenderWindow window)

@@ -52,14 +52,11 @@ namespace Proftaak_Orientatie_Game.src.Networking
         {
             clients = new List<Client>();
 
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            //IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPAddress ipAddress = IPAddress.Parse("145.93.105.11");
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 8001);
+            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 8001);
 
-            Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            Socket listener = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-            Console.WriteLine("Server: {0}:{1}", ipAddress.AddressFamily, 8001);
+            Console.WriteLine("Server: {0}:{1}", IPAddress.Any.AddressFamily, 8001);
 
             // Bind the socket to the local endpoint and listen for incoming connections.  
             try

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.SpriteUtils;
+using Proftaak_Orientatie_Game.src.Entities;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -13,6 +14,9 @@ namespace Proftaak_Orientatie_Game.Entities
 {
     class Player : IEntity
     {
+        public const float MAX_HEALTH = 100.0f;
+        public float Health { get; set; } = MAX_HEALTH * 0.5f;
+
         private const float TOTAL_SHOOT_COOLDOWN = 0.4f;
         private const float REPRESS_COOLDOWN_REDUCTION = 0.1f;
         private float _shootCooldown;
@@ -31,14 +35,15 @@ namespace Proftaak_Orientatie_Game.Entities
 
         private Direction _currentDirection;
 
-        public Player(Vector2f spawnPositon, IPlayerController playerController)
+        public Player(Vector2f spawnPositon, IPlayerController playerController, Texture playerTexture, Texture healthBarTexture, EntityManager manager)
         {
+            manager.Add(new HealthBar(healthBarTexture, this));
+
             canBeHitByBullet = true;
 
             _playerController = playerController;
 
-            Texture tex = new Texture("res/textures/player.png");
-            _sprite = new Sprite(tex) {
+            _sprite = new Sprite(playerTexture) {
                 Position = spawnPositon,
                 TextureRect = _animations[(int)Direction.DOWN].GetShape(),
                 Scale = new Vector2f(3.0f, 3.0f),
