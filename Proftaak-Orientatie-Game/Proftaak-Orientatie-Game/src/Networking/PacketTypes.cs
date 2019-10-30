@@ -60,11 +60,12 @@ namespace Proftaak_Orientatie_Game.src.Networking
         public int clientID { get; set; }
     }
 
-    struct PositionPacket : IPacket
+    struct PositionLookPacket : IPacket
     {
         public PACKET_TYPES packetType { get; set; }
         public int clientID { get; set; }
-        public uint positionX { get; set; } //float x * 10 then floored
-        public uint positionY { get; set; } //float y * 10 then floored
+        public uint positionX; //float x * 10 then floored
+        public uint positionY; //float y * 10 then floored
+        public UInt16 rotation;
     }
 }
