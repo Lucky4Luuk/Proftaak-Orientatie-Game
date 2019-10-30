@@ -11,17 +11,17 @@ using System.Threading.Tasks;
 
 namespace Proftaak_Orientatie_Game.src.Networking
 {
-    // State object for reading client data asynchronously  
+    // State object for reading client data asynchronously
     public class StateObject
     {
         // Client information.  
         public Socket workSocket = null;
         public Client client = new Client((int)DateTime.Now.Ticks);
-        // Size of receive buffer.  
+        // Size of receive buffer.
         public const int BufferSize = 1024;
-        // Receive buffer.  
+        // Receive buffer.
         public byte[] buffer = new byte[BufferSize];
-        // Received data string.  
+        // Received data string.
         public StringBuilder sb = new StringBuilder();
 
         public StateObject(ref List<Client> clients)
@@ -44,7 +44,7 @@ namespace Proftaak_Orientatie_Game.src.Networking
 
     class InboundConnection
     {
-        // Thread signal.  
+        // Thread signal.
         public static ManualResetEvent allDone = new ManualResetEvent(false);
 
         public int nextAvailableClientID = 0;
@@ -55,16 +55,13 @@ namespace Proftaak_Orientatie_Game.src.Networking
         {
             clients = new List<Client>();
 
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            //IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPAddress ipAddress = IPAddress.Parse("145.93.106.113");
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 8001);
+            IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 8001);
 
-            Socket listener = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            Socket listener = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
-            Console.WriteLine("Server: {0}:{1}", ipAddress.AddressFamily, 8001);
+            Console.WriteLine("Server: {0}:{1}", IPAddress.Any.AddressFamily, 8001);
 
-            // Bind the socket to the local endpoint and listen for incoming connections.  
+            // Bind the socket to the local endpoint and listen for incoming connections.
             try
             {
                 listener.Bind(localEndPoint);
@@ -72,16 +69,16 @@ namespace Proftaak_Orientatie_Game.src.Networking
 
                 while (true)
                 {
-                    // Set the event to nonsignaled state.  
+                    // Set the event to nonsignaled state.
                     allDone.Reset();
 
-                    // Start an asynchronous socket to listen for connections.  
+                    // Start an asynchronous socket to listen for connections.
                     Console.WriteLine("Waiting for a connection...");
                     listener.BeginAccept(
                         new AsyncCallback(AcceptCallback),
                         listener);
 
-                    // Wait until a connection is made before continuing.  
+                    // Wait until a connection is made before continuing.
                     allDone.WaitOne();
                 }
 

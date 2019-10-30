@@ -64,6 +64,7 @@
     <Compile Include="src\Entities\Bullet.cs" />
     <Compile Include="src\Entities\BulletTrail.cs" />
     <Compile Include="src\Entities\EntityManager.cs" />
+    <Compile Include="src\Entities\HealthBar.cs" />
     <Compile Include="src\Entities\IEntity.cs" />
     <Compile Include="src\Entities\IPlayerController.cs" />
     <Compile Include="src\Entities\KeyboardController.cs" />
@@ -102,6 +103,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="csfml-window.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="res\textures\healthbar.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="res\textures\player.png">
