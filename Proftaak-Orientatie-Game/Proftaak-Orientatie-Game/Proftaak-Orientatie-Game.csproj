@@ -75,7 +75,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\GameStates\Menu.cs" />
     <Compile Include="src\GameStates\Server.cs" />
-    <Compile Include="src\Networking\InboundConnection.cs" />
+    <Compile Include="src\Networking\Connection.cs" />
     <Compile Include="src\Networking\PacketTypes.cs" />
     <Compile Include="src\Networking\ThreadLauncher.cs" />
     <Compile Include="src\SpriteUtils\Animation.cs" />
