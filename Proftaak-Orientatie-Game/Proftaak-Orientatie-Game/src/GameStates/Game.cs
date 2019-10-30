@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.Entities;
 using Proftaak_Orientatie_Game.GameStates;
-using Proftaak_Orientatie_Game.src.Networking;
+using Proftaak_Orientatie_Game.Networking;
 using Proftaak_Orientatie_Game.UI;
 using Proftaak_Orientatie_Game.World;
 using SFML.Graphics;
@@ -15,16 +15,16 @@ using SFML.System;
 
 namespace Proftaak_Orientatie_Game.GameStates
 {
-    // State object for reading client data asynchronously
+    // State object for reading client data asynchronously  
     public class StateObject
     {
-        // Client information.
+        // Client information.  
         public Socket workSocket = null;
-        // Size of receive buffer.
+        // Size of receive buffer.  
         public const int BufferSize = 1024;
-        // Receive buffer.
+        // Receive buffer.  
         public byte[] buffer = new byte[BufferSize];
-        // Received data string.
+        // Received data string.  
         public StringBuilder sb = new StringBuilder();
     }
 
@@ -41,8 +41,6 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         private Text debugText;
         private Font font = new Font("res/fonts/defaultFont.ttf");
-
-        private Vector2f oldPlayerPos = new Vector2f(0f, 0f);
 
         public override void OnCreate()
         {
@@ -78,13 +76,7 @@ namespace Proftaak_Orientatie_Game.GameStates
 
             Player player = _entityManager._entities.OfType<Player>().First();
             Vector2f playerPos = player.getPosition();
-
-            if (Math.Abs(playerPos.X - oldPlayerPos.X) > 0.5 || Math.Abs(playerPos.Y - oldPlayerPos.Y) > 0.5)
-            {
-                oldPlayerPos = playerPos;
-                //Console.WriteLine("PLAYER POS: " + playerPos.X.ToString() + "-" + playerPos.Y.ToString());
-                Send(state.workSocket, "1:" + clientID + "-" + playerPos.X.ToString() + "-" + playerPos.Y.ToString() + "<EOF>");
-            }
+            Send(state.workSocket, "1:" + playerPos.X.ToString() + "-" + playerPos.Y.ToString());
         }
 
         public override void OnDraw(float deltatime, RenderWindow window)

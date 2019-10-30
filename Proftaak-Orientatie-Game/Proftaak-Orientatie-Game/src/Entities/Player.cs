@@ -96,8 +96,6 @@ namespace Proftaak_Orientatie_Game.Entities
                 _shootCooldown = TOTAL_SHOOT_COOLDOWN;
             }
 
-            Console.WriteLine(_shootCooldown);
-
             _isShootPressed = shoot;
 
             // Update animation

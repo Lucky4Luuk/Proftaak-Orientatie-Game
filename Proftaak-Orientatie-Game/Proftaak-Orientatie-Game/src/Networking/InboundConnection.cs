@@ -5,11 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Proftaak_Orientatie_Game.src.Networking
+namespace Proftaak_Orientatie_Game.Networking
 {
     // State object for reading client data asynchronously
     public class StateObject
@@ -44,6 +45,8 @@ namespace Proftaak_Orientatie_Game.src.Networking
 
     class InboundConnection
     {
+        private readonly ThreadLauncher _threadLauncher;
+
         // Thread signal.
         public static ManualResetEvent allDone = new ManualResetEvent(false);
 
@@ -51,8 +54,10 @@ namespace Proftaak_Orientatie_Game.src.Networking
 
         public List<Client> clients;
 
-        public InboundConnection(EntityManager entityManager)
+        public InboundConnection(EntityManager entityManager, ThreadLauncher.OnPacket callback)
         {
+            _threadLauncher = new ThreadLauncher(callback);
+
             clients = new List<Client>();
 
             IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Any, 8001);
@@ -89,43 +94,6 @@ namespace Proftaak_Orientatie_Game.src.Networking
             }
         }
 
-        public void OnPacket(string rawData)
-        {
-            try
-            {
-                string[] splitData = rawData.Split(':');
-                int identifier = Convert.ToInt32(splitData[0]);
-                string data = splitData[1];
-
-                if (identifier == (int)PACKET_TYPES.CLIENT_POSITION)
-                {
-                    string[] dataParts = data.Split('-');
-                    int cid = Convert.ToInt32(dataParts[0]);
-                    float x = float.Parse(dataParts[1]);
-                    float y = float.Parse(dataParts[2]);
-
-                    foreach (Client client in clients)
-                    {
-                        if (client.clientID == cid)
-                        {
-                            //Console.WriteLine("Client with id {0} has a new position: [{1}; {2}]", cid, x, y);
-                            client.position = new Vector2f(x, y);
-                        }
-                    }
-                }
-                //Console.WriteLine(data);
-                else
-                {
-                    //Console.WriteLine(rawData);
-                    return;
-                }
-            } catch (Exception ex)
-            {
-                //Console.WriteLine("Incorrect package received!");
-                return;
-            }
-        }
-
         public void AcceptCallback(IAsyncResult ar)
         {
             //Signal the main thread to continue
@@ -146,63 +114,26 @@ namespace Proftaak_Orientatie_Game.src.Networking
 
         public void ReadCallback(IAsyncResult ar)
         {
-            String content = String.Empty;
-
-            //Retrieve the state object and the handler socket
-            //from the asynchronous state object
             StateObject state = (StateObject)ar.AsyncState;
             Socket handler = state.workSocket;
 
-            //Read data from the client socket
-            try
+            if (state.buffer.Length > 0)
             {
-                int bytesRead = handler.EndReceive(ar);
+                byte packetLength = state.buffer[0];
 
-                if (bytesRead > 0)
+                if (state.buffer.Length >= packetLength)
                 {
-                    //There might be more data, so store the data received far.
-                    state.sb.Append(Encoding.ASCII.GetString(
-                        state.buffer, 0, bytesRead));
+                    byte[] data = state.buffer.Take(packetLength).ToArray();
+                    int id = BitConverter.ToInt32(data, 1);
 
-                    //Check for end-of-file tag. If it is not there, read
-                    //more data.
-                    content = state.sb.ToString();
-                    if (content.IndexOf("<EOF>") > -1)
-                    {
-                        //All the data has been read from the client.
-                        //content = content.Substring(0, content.Length - 5);
-                        //Console.WriteLine("Read {0} bytes from socket. \nData: {1}", content.Length, content);
-                        string[] splitContent = content.Replace("<EOF>", "~").Split('~');
+                    _threadLauncher.Request(id, data);
 
-                        foreach (string c in splitContent)
-                        {
-                            if (!(c == "" || c == " "))
-                            {
-                                //Console.WriteLine("Packet: {0}", c);
-                                OnPacket(c);
-                            }
-                        }
-
-                        Console.WriteLine("Done handling packets!");
-
-                        //Start listening for more packets
-                        state.buffer = new byte[StateObject.BufferSize];
-                        handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                            new AsyncCallback(ReadCallback), state);
-                    }
-                    else
-                    {
-                        //Not all data received. Get more
-                        handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-                            new AsyncCallback(ReadCallback), state);
-                    }
+                    state.buffer = state.buffer.Skip(packetLength).ToArray();
                 }
-            } catch (Exception e)
-            {
-                Console.WriteLine("Error occured while handling client {1}: {0}", e, state.client.clientID);
-                DisconnectClient(state.client.clientID);
-                Console.WriteLine("Clients left: {0}", clients.Count());
             }
+
+            //Prepare receiving the next data
+            handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0, ReadCallback, state);
         }
 
         private void DisconnectClient(int id)

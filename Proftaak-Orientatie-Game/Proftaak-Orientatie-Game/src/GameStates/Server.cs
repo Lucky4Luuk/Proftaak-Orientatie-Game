@@ -4,10 +4,11 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.Entities;
 using Proftaak_Orientatie_Game.GameStates;
-using Proftaak_Orientatie_Game.src.Networking;
+using Proftaak_Orientatie_Game.Networking;
 using Proftaak_Orientatie_Game.World;
 using SFML.Graphics;
 using SFML.System;
@@ -28,11 +29,12 @@ namespace Proftaak_Orientatie_Game.GameStates
             info = new Text("Server", font);
 
             _entityManager = new EntityManager();
-            //_entityManager.Add(new Player(new KeyboardController()));
 
-            //_curLevel = new TileMap("res/maps/test.tmx");
+            new Thread(() => { conn = new InboundConnection(_entityManager, OnPacket); }).Start();
+        }
+        public static void OnPacket(byte[] data)
+        {
 
-            conn = new InboundConnection(_entityManager);
         }
 
         public override void OnUpdate(float deltatime, RenderWindow window)
