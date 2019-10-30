@@ -25,6 +25,8 @@ namespace Proftaak_Orientatie_Game.GameStates
         private Font font;
         private Text info;
 
+        private readonly List<Connection> _clients = new List<Connection>();
+
         public override void OnCreate()
         {
             font = new Font("res/fonts/defaultFont.ttf");
@@ -32,29 +34,26 @@ namespace Proftaak_Orientatie_Game.GameStates
 
             _entityManager = new EntityManager();
 
-            new Thread(() => {
-                Connection c = Connection.Listen(42069, OnPacket);
-                c.Send(Encoding.ASCII.GetBytes("Hello World! ~Server"));
-
-            }).Start();
+            // A separate thread to make connections on
             new Thread(() =>
             {
-                Connection c = new Connection(IPAddress.Parse("127.0.0.1"), 42069, OnClientPacket);
+                while (true)
+                {
+                    Connection client = Connection.Listen(42069, OnPacket);
 
-                for (int i = 0; i < 3; i++) {
-                    c.Send(Encoding.ASCII.GetBytes("Hello World! ~Client"));
+                    lock(_clients)
+                        _clients.Add(client);
                 }
             }).Start();
-
-
         }
 
-        public static void OnClientPacket(byte[]data)
+        public void BroadCast(byte[] data)
         {
-            Console.WriteLine("Client received: " + Encoding.ASCII.GetString(data));
+            foreach (var client in _clients)
+                client.Send(data);
         }
 
-        public static void OnPacket(byte[] data)
+        private static void OnPacket(byte[] data)
         {
             Console.WriteLine("Server received: " + Encoding.ASCII.GetString(data));
         }
@@ -75,6 +74,9 @@ namespace Proftaak_Orientatie_Game.GameStates
         }
 
         public override void OnDestroy()
-        { }
+        {
+            foreach (var client in _clients)
+                client.Close();
+        }
     }
 }

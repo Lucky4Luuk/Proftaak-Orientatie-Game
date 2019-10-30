@@ -52,9 +52,11 @@ namespace Proftaak_Orientatie_Game.Networking
             var localEndPoint = new IPEndPoint(IPAddress.Any, port);
             var listener = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
+            // Setup the listener socket
             listener.Bind(localEndPoint);
             listener.Listen(100);
 
+            // Accept the first connection
             Socket socket = listener.Accept();
 
             listener.Close();
@@ -64,21 +66,13 @@ namespace Proftaak_Orientatie_Game.Networking
 
         public void Send(byte[] data)
         {
-            _socket.BeginSend(new [] {(byte) data.Length}, 0, 1, 0, AsyncSendCallback, _socket);
-            _socket.BeginSend(data, 0, data.Length, 0, AsyncSendCallback, _socket);
+            _socket.Send(new [] {(byte) data.Length}, 0, 1, 0);
+            _socket.Send(data, 0, data.Length, 0);
         }
 
         public void Close()
         {
             _socket.Close();
-        }
-
-        private static void AsyncSendCallback(IAsyncResult ar)
-        {
-            var handler = (Socket)ar.AsyncState;
-
-            // Complete sending the data to the remote device.
-            handler.EndSend(ar);
         }
 
         private static void AsyncReceiveCallback(IAsyncResult ar)

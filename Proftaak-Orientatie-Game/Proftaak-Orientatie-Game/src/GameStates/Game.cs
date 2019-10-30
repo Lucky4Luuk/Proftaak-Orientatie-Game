@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.Entities;
 using Proftaak_Orientatie_Game.GameStates;
 using Proftaak_Orientatie_Game.Networking;
+using Proftaak_Orientatie_Game.src.Networking;
 using Proftaak_Orientatie_Game.UI;
 using Proftaak_Orientatie_Game.World;
 using SFML.Graphics;
@@ -20,13 +21,27 @@ namespace Proftaak_Orientatie_Game.GameStates
         private EntityManager _entityManager;
         private Level _curLevel;
 
-        private Text debugText;
-        private Font font = new Font("res/fonts/defaultFont.ttf");
+        private Connection _serverConnection;
+        private SceneBuffer _sceneBuffer;
+
+        private readonly Font _font = new Font("res/fonts/defaultFont.ttf");
 
         public override void OnCreate()
         {
+            Console.WriteLine("Connecting...");
+            try
+            {
+                _serverConnection = new Connection(IPAddress.Parse("127.0.0.1"), 42069,
+                    (data) => { _sceneBuffer.Process(data); }
+                );
 
-
+                Console.WriteLine("Connected!");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                RequestNewState(new Menu());
+            }
 
             Texture playerTexture = new Texture("res/textures/player.png");
             Texture healthBarTexture = new Texture("res/textures/healthbar.png");
@@ -35,8 +50,6 @@ namespace Proftaak_Orientatie_Game.GameStates
             _entityManager.Add(new Player(new Vector2f(300.0f, 300.0f), new KeyboardController(), playerTexture, healthBarTexture, _entityManager));
 
             _curLevel = new TileMap("res/maps/test.tmx");
-
-            debugText = new Text("UNDEFINED", font);
         }
 
         public override void OnUpdate(float deltatime, RenderWindow window)
@@ -53,8 +66,6 @@ namespace Proftaak_Orientatie_Game.GameStates
         {
             _curLevel.OnDraw(deltatime, window);
             _entityManager.Draw(deltatime, window);
-
-            window.Draw(debugText);
         }
 
         public override void OnDestroy()
