@@ -81,6 +81,7 @@
     <Compile Include="src\Networking\ThreadLauncher.cs" />
     <Compile Include="src\SpriteUtils\Animation.cs" />
     <Compile Include="src\UI\Button.cs" />
+    <Compile Include="src\World\Camera.cs" />
     <Compile Include="src\World\Level.cs" />
     <Compile Include="src\World\TileMap.cs" />
   </ItemGroup>

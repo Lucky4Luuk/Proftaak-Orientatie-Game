@@ -51,19 +51,18 @@ namespace Proftaak_Orientatie_Game.Networking
     interface IPacket
     {
         PACKET_TYPES packetType { get; set; }
-        int clientID { get; set; }
     }
 
     struct ClientIDPacket : IPacket
     {
         public PACKET_TYPES packetType { get; set; }
-        public int clientID { get; set; }
     }
 
     struct PositionLookPacket : IPacket
     {
         public PACKET_TYPES packetType { get; set; }
-        public int clientID { get; set; }
+
+        //Packet specific fields
         public uint positionX; //float x * 10 then floored
         public uint positionY; //float y * 10 then floored
         public UInt16 rotation;

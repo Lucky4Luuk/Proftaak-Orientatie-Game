@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.Entities;
 using Proftaak_Orientatie_Game.GameStates;
 using Proftaak_Orientatie_Game.Networking;
-using Proftaak_Orientatie_Game.src.Networking;
+using Proftaak_Orientatie_Game.World;
+//using Proftaak_Orientatie_Game.src.Networking;
 using Proftaak_Orientatie_Game.UI;
 using Proftaak_Orientatie_Game.World;
 using SFML.Graphics;
@@ -25,6 +26,8 @@ namespace Proftaak_Orientatie_Game.GameStates
         private SceneBuffer _sceneBuffer;
 
         private readonly Font _font = new Font("res/fonts/defaultFont.ttf");
+
+        private Camera camera = new Camera();
 
         public override void OnCreate()
         {
@@ -64,6 +67,10 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public override void OnDraw(float deltatime, RenderWindow window)
         {
+            Player player = _entityManager._entities.OfType<Player>().First();
+            camera.viewport.Size = (Vector2f)window.Size;
+            camera.viewport.Center = player.getPosition();
+            window.SetView(camera.viewport);
             _curLevel.OnDraw(deltatime, window);
             _entityManager.Draw(deltatime, window);
         }
