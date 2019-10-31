@@ -15,6 +15,9 @@ namespace Proftaak_Orientatie_Game.Entities.Player
         public Vector2f Velocity { get; set; }
         public Vector2f Direction { get; set; }
 
+        public Vector2f? ShotOrigin { get; set; } = null;
+        public Vector2f ShotDirection { get; set; }
+
         public abstract void FixedUpdate(RenderWindow window, float fixedDeltatime);
         public abstract void Update(RenderWindow window, float deltatime);
     }

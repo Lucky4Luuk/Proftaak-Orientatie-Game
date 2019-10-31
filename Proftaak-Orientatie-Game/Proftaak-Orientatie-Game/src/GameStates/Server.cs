@@ -88,8 +88,9 @@ namespace Proftaak_Orientatie_Game.GameStates
                 }
                 catch (Exception)
                 {
+                    int id = _players[_clients[i]].id;
                     _clients.RemoveAt(i--);
-                    BroadCast(Packet.Serialize(new PlayerDisconnectPacket()));
+                    BroadCast(Packet.Serialize(new PlayerDisconnectPacket(id)));
                 }
             }
         }
@@ -111,11 +112,19 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public override void OnTick()
         {
-            lock(_players)
+            lock (_players)
+            {
                 foreach (var player in _players)
-                {
                     BroadCast(Packet.Serialize(player.Value));
-                }
+
+                Queue<Connection> removal = new Queue<Connection>();
+                foreach (var player in _players)
+                    if (!_clients.Contains(player.Key))
+                        removal.Enqueue(player.Key);
+
+                while (removal.Count > 0)
+                    _players.Remove(removal.Dequeue());
+            }
         }
 
         public override void OnDestroy()

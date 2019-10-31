@@ -11,6 +11,11 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 {
     class KeyboardController : IPlayerController
     {
+        private const float TOTAL_SHOOT_COOLDOWN = 0.4f;
+        private const float REPRESS_COOLDOWN_REDUCTION = 0.1f;
+        private float _shootCooldown;
+        private bool _isShootPressed;
+
         public override void FixedUpdate(RenderWindow window, float deltatime)
         {
             if (window.HasFocus())
@@ -44,7 +49,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             }
         }
 
-        public override void Update(RenderWindow window, float fixedDeltatime)
+        public override void Update(RenderWindow window, float deltatime)
         {
             if (window.HasFocus())
             {
@@ -54,6 +59,26 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
                 Direction = mousePos / (float) Math.Sqrt(mousePos.X * mousePos.X + mousePos.Y * mousePos.Y);
 
+                bool shoot = Keyboard.IsKeyPressed(Keyboard.Key.Space);
+
+
+                _shootCooldown -= deltatime;
+                if (_isShootPressed && !shoot)
+                    _shootCooldown -= REPRESS_COOLDOWN_REDUCTION;
+
+                ShotOrigin = null;
+
+                if (shoot && _shootCooldown <= 0.0f)
+                {
+                    ShotOrigin = Position;
+                    ShotDirection = Direction;
+
+                    //camera.Shake(15f, 0.98f, 0.2f, 2f);
+                    //camera.Recoil(15f, Direction);
+                    _shootCooldown = TOTAL_SHOOT_COOLDOWN;
+                }
+
+                _isShootPressed = shoot;
             }
         }
     }

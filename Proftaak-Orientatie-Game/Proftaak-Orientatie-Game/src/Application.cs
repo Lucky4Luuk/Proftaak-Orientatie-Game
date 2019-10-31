@@ -72,7 +72,7 @@ namespace Proftaak_Orientatie_Game
 
                 _currentGameState.OnDraw(deltatime, _window);
 
-                if (_currentGameState.IsNewStateRequested())
+                while (_currentGameState.IsNewStateRequested())
                 {
                     _currentGameState.OnDestroy();
                     _currentGameState = _currentGameState.GetRequestedState();
