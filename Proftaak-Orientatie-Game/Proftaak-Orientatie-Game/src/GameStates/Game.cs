@@ -28,6 +28,8 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         private readonly Font _font = new Font("res/fonts/defaultFont.ttf");
 
+        private Camera camera = new Camera();
+
         public override void OnCreate()
         {
             Texture playerTexture = new Texture("res/textures/player.png");
@@ -77,6 +79,10 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public override void OnDraw(float deltatime, RenderWindow window)
         {
+            Player player = _entityManager.ActivePlayer;
+            camera.viewport.Size = (Vector2f)window.Size;
+            camera.viewport.Center = player.getPosition();
+            window.SetView(camera.viewport);
             _curLevel.OnDraw(deltatime, window);
             _entityManager.Draw(deltatime, window);
         }
