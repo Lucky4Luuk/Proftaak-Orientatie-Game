@@ -54,7 +54,7 @@ namespace Proftaak_Orientatie_Game.Networking
                     {
                         _players.Add(packet.id, packet);
 
-                        _entityManager.Add(new Player(packet.position, new NetworkController(this, packet.id), _playerTexture, _healthBarTexture, _entityManager));
+                        _entityManager.Add(new Player(packet.position, new NetworkController(this, packet.id), _playerTexture, _healthBarTexture, _entityManager, new World.Camera()));
                     }
                 }
             }
