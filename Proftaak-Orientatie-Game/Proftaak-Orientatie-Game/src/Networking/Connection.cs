@@ -96,7 +96,7 @@ namespace Proftaak_Orientatie_Game.Networking
                 try
                 {
                     state.socket.BeginReceive(state.data, 0, packetSize, 0, AsyncReceiveCallback, state);
-                } catch (Exception ex)
+                } catch (Exception)
                 {
                     Console.WriteLine("Player disconnected for mysterious reasons!");
                 }

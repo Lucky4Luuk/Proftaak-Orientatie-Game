@@ -63,7 +63,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
             // Update the player controller
             _playerController.Position = _sprite.Position;
-            _playerController.Update(window, deltatime);
+            _playerController.Update(window, deltatime, camera);
             _sprite.Position = _playerController.Position;
 
             // Update the direction
