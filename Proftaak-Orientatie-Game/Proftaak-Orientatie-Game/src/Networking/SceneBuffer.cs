@@ -31,15 +31,12 @@ namespace Proftaak_Orientatie_Game.Networking
         {
             if (Packet.GetType(data) == PACKET_TYPES.PLAYER_SPAWN)
             {
-                Console.WriteLine("Received Spawn Packet!");
                 _myId = Packet.Deserialize<PlayerSpawnPacket>(data).id;
             }
 
             if (Packet.GetType(data) == PACKET_TYPES.PLAYER_UPDATE)
             {
                 PlayerUpdatePacket packet = Packet.Deserialize<PlayerUpdatePacket>(data);
-
-                Console.WriteLine(packet.position);
 
                 if (packet.id == _myId)
                     return;
