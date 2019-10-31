@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Proftaak_Orientatie_Game.Networking;
 using SFML.Graphics;
 using SFML.System;
 
@@ -18,6 +19,7 @@ namespace Proftaak_Orientatie_Game.Entities
         public abstract void OnUpdate(float deltatime, EntityManager entityManager, RenderWindow window);
         public abstract void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, RenderWindow window);
         public abstract void OnDraw(float deltatime, RenderWindow window);
+        public abstract void OnTick(ConnectionBuffer buffer);
 
 
 

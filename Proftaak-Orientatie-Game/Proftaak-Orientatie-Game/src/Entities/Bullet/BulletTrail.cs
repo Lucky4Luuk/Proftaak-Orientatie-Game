@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Proftaak_Orientatie_Game.Networking;
 using SFML.Graphics;
 using SFML.System;
 
-namespace Proftaak_Orientatie_Game.Entities
+namespace Proftaak_Orientatie_Game.Entities.Bullet
 {
     class BulletTrail : IEntity
     {
@@ -39,6 +40,10 @@ namespace Proftaak_Orientatie_Game.Entities
             _line[0] = new Vertex(_line[0].Position, new Color(255, 255, 255, 0));
             _line[1] = new Vertex(_line[1].Position, new Color(255, 255, 255, (byte)((_time / TOTAL_TIME) * 255)));
             window.Draw(_line);
+        }
+
+        public override void OnTick(ConnectionBuffer buffer)
+        {
         }
 
         public override Vector2f getPosition()

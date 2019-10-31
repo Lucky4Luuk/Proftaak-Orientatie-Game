@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using Proftaak_Orientatie_Game.Networking.Server;
 
 namespace Proftaak_Orientatie_Game.Networking
 {
@@ -27,7 +26,7 @@ namespace Proftaak_Orientatie_Game.Networking
 
         public Connection(IPAddress target, int port, ThreadLauncher.OnPacket callback)
         {
-            var threadLauncher = new ThreadLauncher(callback);
+            var threadLauncher = new ThreadLauncher(this, callback);
 
             // Setup a TCP Connection
             byte[] buffer = new byte[1];
@@ -39,7 +38,7 @@ namespace Proftaak_Orientatie_Game.Networking
 
         private Connection(Socket socket, ThreadLauncher.OnPacket callback)
         {
-            var threadLauncher = new ThreadLauncher(callback);
+            var threadLauncher = new ThreadLauncher(this, callback);
 
             byte[] buffer = new byte[1];
 
@@ -52,14 +51,21 @@ namespace Proftaak_Orientatie_Game.Networking
             var localEndPoint = new IPEndPoint(IPAddress.Any, port);
             var listener = new Socket(IPAddress.Any.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
+            Socket socket;
+
             // Setup the listener socket
-            listener.Bind(localEndPoint);
-            listener.Listen(100);
+            try
+            {
+                listener.Bind(localEndPoint);
+                listener.Listen(100);
 
-            // Accept the first connection
-            Socket socket = listener.Accept();
-
-            listener.Close();
+                // Accept the first connection
+                socket = listener.Accept();
+            }
+            finally
+            {
+                listener.Close();
+            }
 
             return new Connection(socket, callback);
         }

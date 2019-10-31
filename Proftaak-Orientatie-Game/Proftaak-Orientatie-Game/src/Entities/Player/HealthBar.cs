@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Proftaak_Orientatie_Game.Entities;
+using Proftaak_Orientatie_Game.Entities.Player;
+using Proftaak_Orientatie_Game.Networking;
 using SFML.Graphics;
 using SFML.System;
 
-namespace Proftaak_Orientatie_Game.src.Entities
+namespace Proftaak_Orientatie_Game.Entities.Player
 {
     class HealthBar : IEntity
     {
@@ -50,6 +51,10 @@ namespace Proftaak_Orientatie_Game.src.Entities
 
             window.Draw(_background);
             window.Draw(_bar);
+        }
+
+        public override void OnTick(ConnectionBuffer buffer)
+        {
         }
 
         public override Vector2f getPosition()

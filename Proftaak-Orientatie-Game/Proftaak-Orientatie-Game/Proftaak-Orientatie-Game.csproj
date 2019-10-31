@@ -61,14 +61,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\Entities\Bullet.cs" />
-    <Compile Include="src\Entities\BulletTrail.cs" />
+    <Compile Include="src\Entities\Bullet\Bullet.cs" />
+    <Compile Include="src\Entities\Bullet\BulletTrail.cs" />
     <Compile Include="src\Entities\EntityManager.cs" />
-    <Compile Include="src\Entities\HealthBar.cs" />
+    <Compile Include="src\Entities\Player\HealthBar.cs" />
     <Compile Include="src\Entities\IEntity.cs" />
-    <Compile Include="src\Entities\IPlayerController.cs" />
-    <Compile Include="src\Entities\KeyboardController.cs" />
-    <Compile Include="src\Entities\Player.cs" />
+    <Compile Include="src\Entities\Player\IPlayerController.cs" />
+    <Compile Include="src\Entities\Player\KeyboardController.cs" />
+    <Compile Include="src\Entities\Player\NetworkController.cs" />
+    <Compile Include="src\Entities\Player\Player.cs" />
     <Compile Include="src\GameStates\Game.cs" />
     <Compile Include="src\GameStates\IGameState.cs" />
     <Compile Include="src\Application.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="src\GameStates\Menu.cs" />
     <Compile Include="src\GameStates\Server.cs" />
     <Compile Include="src\Networking\Connection.cs" />
+    <Compile Include="src\Networking\ConnectionBuffer.cs" />
     <Compile Include="src\Networking\PacketTypes.cs" />
     <Compile Include="src\Networking\SceneBuffer.cs" />
     <Compile Include="src\Networking\ThreadLauncher.cs" />

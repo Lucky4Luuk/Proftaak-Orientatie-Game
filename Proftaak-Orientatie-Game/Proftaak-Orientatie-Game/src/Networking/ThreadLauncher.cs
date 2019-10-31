@@ -5,18 +5,20 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Proftaak_Orientatie_Game.Networking.Server
+namespace Proftaak_Orientatie_Game.Networking
 {
     class ThreadLauncher
     {
-        public delegate void OnPacket(byte[] data);
+        public delegate void OnPacket(Connection connection, byte[] data);
 
         private readonly Queue<byte[]> _packets = new Queue<byte[]>();
         private readonly OnPacket _callback;
+        private readonly Connection _parent;
 
-        public ThreadLauncher(OnPacket callback)
+        public ThreadLauncher(Connection connection, OnPacket callback)
         {
             _callback = callback;
+            _parent = connection;
         }
 
         public void Request(byte[] packet)
@@ -31,23 +33,34 @@ namespace Proftaak_Orientatie_Game.Networking.Server
             }
 
             if(!threadRunning)
-                StartThread(_packets, _callback);
+                StartThread(_packets, _callback, _parent);
         }
 
-        private static void StartThread(Queue<byte[]> packets, OnPacket callback)
+        private static void StartThread(Queue<byte[]> packets, OnPacket callback, Connection connection)
         {
             new Thread(() =>
             {
-                while (packets.Count > 0)
-                {
-                    byte[] packet;
-
-                    lock (packets)
-                        packet = packets.Dequeue();
-
-                    callback(packet);
-                }
+                byte[] packet = null;
+                while (DoStuff(packets, ref packet))
+                    callback(connection, packet);
+                
             }).Start();
+        }
+
+        private static bool DoStuff(Queue<byte[]> packets, ref byte[] packet)
+        {
+            lock (packets)
+            {
+                if (packets.Count > 0)
+                {
+                    packet = packets.Dequeue();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
     }
 }
