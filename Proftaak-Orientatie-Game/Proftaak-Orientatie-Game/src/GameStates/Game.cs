@@ -29,8 +29,13 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         private Camera camera = new Camera();
 
+        private Text debugText;
+        private Font font;
+
         public override void OnCreate()
         {
+            font = new Font("res/fonts/defaultFont.ttf");
+
             Console.WriteLine("Connecting...");
             try
             {
@@ -50,14 +55,15 @@ namespace Proftaak_Orientatie_Game.GameStates
             Texture healthBarTexture = new Texture("res/textures/healthbar.png");
 
             _entityManager = new EntityManager();
-            _entityManager.Add(new Player(new Vector2f(300.0f, 300.0f), new KeyboardController(), playerTexture, healthBarTexture, _entityManager));
+            _entityManager.Add(new Player(new Vector2f(300.0f, 300.0f), new KeyboardController(), playerTexture, healthBarTexture, _entityManager, camera));
 
-            _curLevel = new TileMap("res/maps/test.tmx");
+            _curLevel = new TileMap("res/maps/game map.tmx");
         }
 
         public override void OnUpdate(float deltatime, RenderWindow window)
         {
             _entityManager.Update(deltatime, window);
+            camera.Update(deltatime);
         }
 
         public override void OnFixedUpdate(float fixedDeltaTime, RenderWindow window)
@@ -69,10 +75,14 @@ namespace Proftaak_Orientatie_Game.GameStates
         {
             Player player = _entityManager._entities.OfType<Player>().First();
             camera.viewport.Size = (Vector2f)window.Size;
-            camera.viewport.Center = player.getPosition();
+            //camera.viewport.Center = player.getPosition();
+            camera.SetPosition(player.getPosition());
             window.SetView(camera.viewport);
             _curLevel.OnDraw(deltatime, window);
             _entityManager.Draw(deltatime, window);
+
+            debugText = new Text(string.Format("Duration: {0}\nIntensity: {1}\nVelocity: {2}", camera.shakeDuration, camera.shakeIntensity, camera.shakeVelocity), font);
+            window.Draw(debugText);
         }
 
         public override void OnDestroy()
