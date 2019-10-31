@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.GameStates;
+using Proftaak_Orientatie_Game.Networking;
 using Proftaak_Orientatie_Game.UI;
 using SFML.Graphics;
 using SFML.System;
@@ -46,6 +47,10 @@ namespace Proftaak_Orientatie_Game.GameStates
 
             _playButton.Draw(window);
             _serverButton.Draw(window);
+        }
+
+        public override void OnTick()
+        {
         }
 
         public override void OnDestroy()

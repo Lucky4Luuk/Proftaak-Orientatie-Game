@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.Entities;
+using Proftaak_Orientatie_Game.Entities.Player;
 using Proftaak_Orientatie_Game.GameStates;
 using Proftaak_Orientatie_Game.Networking;
-using Proftaak_Orientatie_Game.Networking.Server;
 using Proftaak_Orientatie_Game.World;
 using SFML.Graphics;
 using SFML.System;
@@ -25,7 +25,10 @@ namespace Proftaak_Orientatie_Game.GameStates
         private Font font;
         private Text info;
 
+        private int nextId = 0;
+
         private readonly List<Connection> _clients = new List<Connection>();
+        private readonly Dictionary<Connection, PlayerUpdatePacket> _players = new Dictionary<Connection, PlayerUpdatePacket>();
 
         public override void OnCreate()
         {
@@ -39,10 +42,40 @@ namespace Proftaak_Orientatie_Game.GameStates
             {
                 while (true)
                 {
-                    Connection client = Connection.Listen(42069, OnPacket);
+                    Connection client = Connection.Listen(42069, 
+                    (connection, data) => {
 
-                    lock(_clients)
+                        // Responding for a packet
+                        if (Packet.GetType(data) == PACKET_TYPES.PLAYER_UPDATE)
+                        {
+                            PlayerUpdatePacket packet = Packet.Deserialize<PlayerUpdatePacket>(data);
+
+                            Console.WriteLine("Incomming: " + packet.id + ": " + packet.position);
+
+                            lock (_players)
+                            {
+                                packet.id = _players[connection].id;
+                                _players[connection] = packet;
+                            }
+                        }
+                    });
+
+                    // Adding new client
+                    lock (_clients)
+                    {
                         _clients.Add(client);
+                    }
+
+                    lock (_players)
+                    {
+
+                        _players.Add(client, new PlayerUpdatePacket(nextId++, 100,
+                            new Vector2f(0.0f, 0.0f),
+                            new Vector2f(0.0f, 0.0f),
+                            new Vector2f(0.0f, 0.0f))
+                        );
+                        client.Send(Packet.Serialize(new PlayerSpawnPacket(_players.Last().Value.id, _players.Last().Value.position)));
+                    }
                 }
             }).Start();
         }
@@ -51,11 +84,6 @@ namespace Proftaak_Orientatie_Game.GameStates
         {
             foreach (var client in _clients)
                 client.Send(data);
-        }
-
-        private static void OnPacket(byte[] data)
-        {
-            Console.WriteLine("Server received: " + Encoding.ASCII.GetString(data));
         }
 
         public override void OnUpdate(float deltatime, RenderWindow window)
@@ -71,6 +99,16 @@ namespace Proftaak_Orientatie_Game.GameStates
         public override void OnDraw(float deltatime, RenderWindow window)
         {
             window.Draw(info);
+        }
+
+        public override void OnTick()
+        {
+            lock(_players)
+                foreach (var player in _players)
+                {
+                    BroadCast(Packet.Serialize(player.Value));
+                    Console.WriteLine("Outgoing: " + player.Value.id + ": " + player.Value.position);
+                }
         }
 
         public override void OnDestroy()

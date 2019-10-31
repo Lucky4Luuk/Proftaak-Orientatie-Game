@@ -8,20 +8,23 @@ using SFML.System;
 
 namespace Proftaak_Orientatie_Game.Networking
 {
-    enum PACKET_TYPES
+    enum PACKET_TYPES : byte
     {
-        GENERAL = -1,
-        SET_CLIENT_ID = 0,
-        CLIENT_POSITION = 1,
+        PLAYER_SPAWN = 0,
+        PLAYER_UPDATE = 1,
         ENTITY_POSITION = 2,
     }
 
     class Packet
     {
+        public static PACKET_TYPES GetType(byte[] data)
+        {
+            return (PACKET_TYPES)data[0];
+        }
+
         public static byte[] Serialize(IPacket obj)
         {
             int size = Marshal.SizeOf(obj);
-            Console.WriteLine(size);
             byte[] arr = new byte[size];
 
             IntPtr ptr = Marshal.AllocHGlobal(size);
@@ -34,8 +37,7 @@ namespace Proftaak_Orientatie_Game.Networking
 
         public static T Deserialize<T>(byte[] data) where T : struct, IPacket
         {
-            T obj = new T { };
-            obj.packetType = PACKET_TYPES.GENERAL;
+            T obj = new T();
             int size = Marshal.SizeOf(obj);
             IntPtr ptr = Marshal.AllocHGlobal(size);
 
@@ -53,18 +55,39 @@ namespace Proftaak_Orientatie_Game.Networking
         PACKET_TYPES packetType { get; set; }
     }
 
-    struct ClientIDPacket : IPacket
+    struct PlayerSpawnPacket : IPacket
     {
         public PACKET_TYPES packetType { get; set; }
+        public int id;
+        public Vector2f position;
+
+        public PlayerSpawnPacket(int id, Vector2f pos)
+        {
+            packetType = PACKET_TYPES.PLAYER_SPAWN;
+
+            this.id = id;
+            position = pos;
+        }
     }
 
-    struct PositionLookPacket : IPacket
+    struct PlayerUpdatePacket : IPacket
     {
         public PACKET_TYPES packetType { get; set; }
+        public int id;
+        public float health;
+        public Vector2f position;
+        public Vector2f velocity;
+        public Vector2f direction;
 
-        //Packet specific fields
-        public uint positionX; //float x * 10 then floored
-        public uint positionY; //float y * 10 then floored
-        public UInt16 rotation;
+        public PlayerUpdatePacket(int id, float hp, Vector2f pos, Vector2f vel, Vector2f dir)
+        {
+            packetType = PACKET_TYPES.PLAYER_UPDATE;
+
+            this.id = id;
+            health = hp;
+            position = pos;
+            velocity = vel;
+            direction = dir;
+        }
     }
 }

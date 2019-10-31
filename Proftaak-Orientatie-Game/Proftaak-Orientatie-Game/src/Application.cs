@@ -19,8 +19,11 @@ namespace Proftaak_Orientatie_Game
 
         private IGameState _currentGameState;
         private RenderWindow _window;
-        const float fixedDeltaTime = 1f / 60f;
-        private float fixedTime = 0f;
+        const float fixedDeltaTime = 1.0f / 60.0f;
+        private float fixedTime = 0.0f;
+
+        private const float tickDeltaTime = 1.0f / 20.0f;
+        private float tickTime = 0.0f;
 
         private Color clearColor { get; set; } = new Color(133, 108, 161, 255);
 
@@ -52,15 +55,19 @@ namespace Proftaak_Orientatie_Game
                 float deltatime = deltatTimeClock.ElapsedTime.AsSeconds();
                 deltatTimeClock.Restart();
 
-                if (_window.HasFocus())
+                _currentGameState.OnUpdate(deltatime, _window);
+                fixedTime += deltatime;
+                while (fixedTime > fixedDeltaTime)
                 {
-                    _currentGameState.OnUpdate(deltatime, _window);
-                    fixedTime += deltatime;
-                    while (fixedTime > fixedDeltaTime)
-                    {
-                        _currentGameState.OnFixedUpdate(fixedDeltaTime, _window);
-                        fixedTime -= fixedDeltaTime;
-                    }
+                    _currentGameState.OnFixedUpdate(fixedDeltaTime, _window);
+                    fixedTime -= fixedDeltaTime;
+                }
+
+                tickTime += deltatime;
+                while (tickTime > tickDeltaTime)
+                {
+                    _currentGameState.OnTick();
+                    tickTime -= tickDeltaTime;
                 }
 
                 _currentGameState.OnDraw(deltatime, _window);

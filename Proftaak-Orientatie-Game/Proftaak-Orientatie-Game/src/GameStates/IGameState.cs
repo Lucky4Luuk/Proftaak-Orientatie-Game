@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Proftaak_Orientatie_Game.Networking;
 using SFML.Graphics;
 
 namespace Proftaak_Orientatie_Game.GameStates
@@ -16,6 +17,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         public abstract void OnUpdate(float deltatime, RenderWindow window);
         public abstract void OnFixedUpdate(float fixedDeltaTime, RenderWindow window);
         public abstract void OnDraw(float deltatime, RenderWindow window);
+        public abstract void OnTick();
         public abstract void OnDestroy();
 
         protected void RequestNewState(IGameState state)

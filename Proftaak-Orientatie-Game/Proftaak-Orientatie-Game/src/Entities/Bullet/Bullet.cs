@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SFML.System;
 
-namespace Proftaak_Orientatie_Game.Entities
+namespace Proftaak_Orientatie_Game.Entities.Bullet
 {
     class Bullet
     {

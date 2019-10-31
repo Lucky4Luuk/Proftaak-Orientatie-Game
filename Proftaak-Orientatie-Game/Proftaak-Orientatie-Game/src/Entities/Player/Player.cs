@@ -1,20 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.SpriteUtils;
-using Proftaak_Orientatie_Game.src.Entities;
 using Proftaak_Orientatie_Game.World;
+using Proftaak_Orientatie_Game.Entities;
+using Proftaak_Orientatie_Game.Networking;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-namespace Proftaak_Orientatie_Game.Entities
+namespace Proftaak_Orientatie_Game.Entities.Player
 {
     class Player : IEntity
     {
+        public bool Active { get; set; } = false;
+
         public const float MAX_HEALTH = 100.0f;
         public float Health { get; set; } = MAX_HEALTH;
 
@@ -97,7 +101,7 @@ namespace Proftaak_Orientatie_Game.Entities
 
             if (shoot && _shootCooldown <= 0.0f)
             {
-                entityManager.ShootBullet(new Bullet(_sprite.Position, _playerController.Direction), 800.0f);
+                entityManager.ShootBullet(new Bullet.Bullet(_sprite.Position, _playerController.Direction), 800.0f);
                 //camera.Shake(15f, 0.98f, 0.2f, 2f);
                 camera.Recoil(15f, _playerController.Direction);
                 _shootCooldown = TOTAL_SHOOT_COOLDOWN;
@@ -133,6 +137,12 @@ namespace Proftaak_Orientatie_Game.Entities
         public override void OnDraw(float deltatime, RenderWindow window)
         {
             window.Draw(_sprite);
+        }
+
+        public override void OnTick(ConnectionBuffer buffer)
+        {
+            if(Active)
+                buffer.Add(new PlayerUpdatePacket(0, Health, _sprite.Position, _playerController.Velocity, _playerController.Direction));
         }
 
         public override Vector2f getPosition()

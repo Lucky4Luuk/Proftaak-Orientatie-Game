@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SFML.Graphics;
 using SFML.System;
 
-namespace Proftaak_Orientatie_Game.Entities
+namespace Proftaak_Orientatie_Game.Entities.Player
 {
     abstract class IPlayerController
     {
