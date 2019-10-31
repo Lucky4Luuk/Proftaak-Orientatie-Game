@@ -55,13 +55,26 @@ namespace Proftaak_Orientatie_Game.Networking
                     }
                 }
             }
+
+            if (Packet.GetType(data) == PACKET_TYPES.PLAYER_DISCONNECT)
+            {
+                PlayerDisconnectPacket packet = Packet.Deserialize<PlayerDisconnectPacket>(data);
+
+                lock(_players)
+                    _players.Remove(packet.id);
+            }
         }
 
-        public PlayerUpdatePacket GetData(int id)
+        public PlayerUpdatePacket? GetData(int id)
         {
             PlayerUpdatePacket packet;
             lock (_players)
+            {
+                if (!_players.ContainsKey(id))
+                    return null;
+
                 packet = _players[id];
+            }
 
             return packet;
         }

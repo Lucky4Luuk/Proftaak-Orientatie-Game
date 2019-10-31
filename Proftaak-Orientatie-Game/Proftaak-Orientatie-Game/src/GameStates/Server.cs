@@ -50,8 +50,6 @@ namespace Proftaak_Orientatie_Game.GameStates
                         {
                             PlayerUpdatePacket packet = Packet.Deserialize<PlayerUpdatePacket>(data);
 
-                            Console.WriteLine("Incomming: " + packet.id + ": " + packet.position);
-
                             lock (_players)
                             {
                                 packet.id = _players[connection].id;
@@ -91,6 +89,7 @@ namespace Proftaak_Orientatie_Game.GameStates
                 catch (Exception)
                 {
                     _clients.RemoveAt(i--);
+                    BroadCast(Packet.Serialize(new PlayerDisconnectPacket()));
                 }
             }
         }
@@ -116,7 +115,6 @@ namespace Proftaak_Orientatie_Game.GameStates
                 foreach (var player in _players)
                 {
                     BroadCast(Packet.Serialize(player.Value));
-                    Console.WriteLine("Outgoing: " + player.Value.id + ": " + player.Value.position);
                 }
         }
 

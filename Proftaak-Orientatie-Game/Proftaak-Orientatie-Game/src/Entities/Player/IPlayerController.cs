@@ -10,6 +10,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 {
     abstract class IPlayerController
     {
+        public bool DeletionMark { get; set; } = false;
         public Vector2f Position { get; set; }
         public Vector2f Velocity { get; set; }
         public Vector2f Direction { get; set; }

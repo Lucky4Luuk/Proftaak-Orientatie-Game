@@ -96,5 +96,11 @@ namespace Proftaak_Orientatie_Game.Networking
     {
         public PACKET_TYPES packetType { get; set; }
         public int id;
+
+        public PlayerDisconnectPacket(int id)
+        {
+            packetType = PACKET_TYPES.PLAYER_DISCONNECT;
+            this.id = id;
+        }
     }
 }

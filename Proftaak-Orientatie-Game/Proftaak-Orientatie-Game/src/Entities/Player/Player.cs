@@ -124,6 +124,9 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             }
 
             _sprite.TextureRect = _animations[(int)_currentDirection].GetShape();
+
+            if (_playerController.DeletionMark)
+                MarkForDeletion();
         }
 
         public override void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, RenderWindow window)
@@ -132,6 +135,9 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             _playerController.Position = _sprite.Position;
             _playerController.FixedUpdate(window, fixedDeltatime);
             _sprite.Position = _playerController.Position;
+
+            if(_playerController.DeletionMark)
+                MarkForDeletion();
         }
 
         public override void OnDraw(float deltatime, RenderWindow window)

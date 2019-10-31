@@ -22,16 +22,34 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
         public override void FixedUpdate(RenderWindow window, float fixedDeltatime)
         {
-            Position = _buffer.GetData(_id).position;
-            Velocity = _buffer.GetData(_id).velocity;
-            Direction = _buffer.GetData(_id).direction;
+            PlayerUpdatePacket? packet = _buffer.GetData(_id);
+
+            if (packet.HasValue)
+            {
+                Position = packet.Value.position;
+                Velocity = packet.Value.velocity;
+                Direction = packet.Value.direction;
+            }
+            else
+            {
+                DeletionMark = true;
+            }
         }
 
         public override void Update(RenderWindow window, float deltatime)
         {
-            Position = _buffer.GetData(_id).position;
-            Velocity = _buffer.GetData(_id).velocity;
-            Direction = _buffer.GetData(_id).direction;
+            PlayerUpdatePacket? packet = _buffer.GetData(_id);
+
+            if (packet.HasValue)
+            {
+                Position = packet.Value.position;
+                Velocity = packet.Value.velocity;
+                Direction = packet.Value.direction;
+            }
+            else
+            {
+                DeletionMark = true;
+            }
         }
     }
 }
