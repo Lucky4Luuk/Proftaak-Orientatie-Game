@@ -13,6 +13,7 @@ namespace Proftaak_Orientatie_Game.Networking
         PLAYER_SPAWN = 0,
         PLAYER_UPDATE = 1,
         ENTITY_POSITION = 2,
+        PLAYER_DISCONNECT = 3,
     }
 
     class Packet
@@ -89,5 +90,11 @@ namespace Proftaak_Orientatie_Game.Networking
             velocity = vel;
             direction = dir;
         }
+    }
+
+    struct PlayerDisconnectPacket : IPacket
+    {
+        public PACKET_TYPES packetType { get; set; }
+        public int id;
     }
 }
