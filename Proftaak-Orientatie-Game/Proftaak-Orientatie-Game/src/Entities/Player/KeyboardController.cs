@@ -50,7 +50,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             {
                 // Get the direction the mouse is pointing in
                 Vector2f mousePos = new Vector2f(Mouse.GetPosition(window).X, Mouse.GetPosition(window).Y);
-                mousePos -= Position;
+                mousePos -= (Vector2f)window.Size * 0.5f;
 
                 Direction = mousePos / (float) Math.Sqrt(mousePos.X * mousePos.X + mousePos.Y * mousePos.Y);
 
