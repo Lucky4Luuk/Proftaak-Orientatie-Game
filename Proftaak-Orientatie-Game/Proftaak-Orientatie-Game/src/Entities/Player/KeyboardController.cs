@@ -74,7 +74,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
                     ShotOrigin = Position;
                     ShotDirection = Direction;
 
-                    camera.Recoil(15f, Direction);
+                    camera.Recoil(50f, Direction);
                     _shootCooldown = TOTAL_SHOOT_COOLDOWN;
                 }
 
