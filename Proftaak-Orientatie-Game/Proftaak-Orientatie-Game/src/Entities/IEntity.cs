@@ -16,8 +16,8 @@ namespace Proftaak_Orientatie_Game.Entities
         protected bool canCollide = false;
         protected bool canBeHitByBullet = false;
 
-        public abstract void OnUpdate(float deltatime, EntityManager entityManager, RenderWindow window);
-        public abstract void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, RenderWindow window);
+        public abstract void OnUpdate(float deltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window);
+        public abstract void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window);
         public abstract void OnDraw(float deltatime, RenderWindow window);
         public abstract void OnTick(ConnectionBuffer buffer);
 

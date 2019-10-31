@@ -56,7 +56,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             camera = _camera;
         }
 
-        public override void OnUpdate(float deltatime, EntityManager entityManager, RenderWindow window)
+        public override void OnUpdate(float deltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window)
         {
 
             Direction previousDirection = _currentDirection;
@@ -101,9 +101,12 @@ namespace Proftaak_Orientatie_Game.Entities.Player
                 _animations[(int) _currentDirection].Update(deltatime * speed * 2.0f);
             }
 
-            // Shot a bullet
-            if(_playerController.ShotOrigin.HasValue)
-                entityManager.ShootBullet(new Bullet.Bullet(_playerController.ShotOrigin.Value, _playerController.ShotDirection), 800.0f);
+            // Shoot a bullet
+            if (_playerController.ShotOrigin.HasValue)
+            {
+                entityManager.ShootBullet(
+                    new Bullet.Bullet(_playerController.ShotOrigin.Value, _playerController.ShotDirection), 800.0f);
+            }
 
             _sprite.TextureRect = _animations[(int)_currentDirection].GetShape();
 
@@ -111,7 +114,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
                 MarkForDeletion();
         }
 
-        public override void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, RenderWindow window)
+        public override void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window)
         {
             // Update the player controller
             _playerController.Position = _sprite.Position;

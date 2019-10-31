@@ -23,26 +23,26 @@ namespace Proftaak_Orientatie_Game.Entities
                 _buffer.Enqueue(entity);
         }
 
-        public void Update(float deltaTime, RenderWindow window)
+        public void Update(float deltaTime, ConnectionBuffer buffer, RenderWindow window)
         {
             lock(_buffer)
                 while (_buffer.Count != 0)
                     _entities.Add(_buffer.Dequeue());
 
             foreach(IEntity e in _entities)
-                e.OnUpdate(deltaTime, this, window);
+                e.OnUpdate(deltaTime, this, buffer, window);
 
             DeleteMarkedEntities();
         }
 
-        public void FixedUpdate(float fixedDeltaTime, RenderWindow window)
+        public void FixedUpdate(float fixedDeltaTime, ConnectionBuffer buffer, RenderWindow window)
         {
             lock (_buffer)
                 while (_buffer.Count != 0)
                     _entities.Add(_buffer.Dequeue());
 
             foreach (IEntity e in _entities)
-                e.OnFixedUpdate(fixedDeltaTime, this, window);
+                e.OnFixedUpdate(fixedDeltaTime, this, buffer, window);
 
             DeleteMarkedEntities();
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.Entities;
+using Proftaak_Orientatie_Game.Entities.Bullet;
 using Proftaak_Orientatie_Game.Entities.Player;
 using SFML.Graphics;
 using SFML.System;
@@ -62,6 +63,16 @@ namespace Proftaak_Orientatie_Game.Networking
 
                 lock(_players)
                     _players.Remove(packet.id);
+            }
+
+            if (Packet.GetType(data) == PACKET_TYPES.PLAYER_SHOOT)
+            {
+                PlayerShootPacket packet = Packet.Deserialize<PlayerShootPacket>(data);
+
+                if(packet.id == _myId)
+                    return;
+
+                _entityManager.ShootBullet(new Bullet(packet.origin, packet.direction), 800.0f);
             }
         }
 

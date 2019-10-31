@@ -12,7 +12,7 @@ namespace Proftaak_Orientatie_Game.Networking
     {
         PLAYER_SPAWN = 0,
         PLAYER_UPDATE = 1,
-        ENTITY_POSITION = 2,
+        PLAYER_SHOOT = 2,
         PLAYER_DISCONNECT = 3,
     }
 
@@ -102,5 +102,13 @@ namespace Proftaak_Orientatie_Game.Networking
             packetType = PACKET_TYPES.PLAYER_DISCONNECT;
             this.id = id;
         }
+    }
+
+    struct PlayerShootPacket : IPacket
+    {
+        public PACKET_TYPES packetType { get; set; }
+        public int id;
+        public Vector2f origin;
+        public Vector2f direction;
     }
 }

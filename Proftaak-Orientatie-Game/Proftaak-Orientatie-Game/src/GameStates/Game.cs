@@ -58,7 +58,7 @@ namespace Proftaak_Orientatie_Game.GameStates
             Console.WriteLine("Connecting...");
             try
             {
-                _serverConnection = new Connection(IPAddress.Parse("127.0.0.1"), 42069,
+                _serverConnection = new Connection(IPAddress.Parse("145.93.104.83"), 42069,
                     (connection, data) => { _sceneBuffer.Process(data); }
                 );
                 _connectionBuffer  = new ConnectionBuffer(_serverConnection);
@@ -74,13 +74,13 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public override void OnUpdate(float deltatime, RenderWindow window)
         {
-            _entityManager.Update(deltatime, window);
+            _entityManager.Update(deltatime, _connectionBuffer, window);
             camera.Update(deltatime);
         }
 
         public override void OnFixedUpdate(float fixedDeltaTime, RenderWindow window)
         {
-            _entityManager.FixedUpdate(fixedDeltaTime, window);
+            _entityManager.FixedUpdate(fixedDeltaTime, _connectionBuffer, window);
         }
 
         public override void OnDraw(float deltatime, RenderWindow window)

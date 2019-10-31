@@ -20,8 +20,6 @@ namespace Proftaak_Orientatie_Game.GameStates
 {
     class Server : IGameState
     {
-        private EntityManager _entityManager;
-
         private Font font;
         private Text info;
 
@@ -30,12 +28,12 @@ namespace Proftaak_Orientatie_Game.GameStates
         private readonly List<Connection> _clients = new List<Connection>();
         private readonly Dictionary<Connection, PlayerUpdatePacket> _players = new Dictionary<Connection, PlayerUpdatePacket>();
 
+        private readonly Queue<IPacket> _actions = new Queue<IPacket>();
+
         public override void OnCreate()
         {
             font = new Font("res/fonts/defaultFont.ttf");
             info = new Text("Server", font);
-
-            _entityManager = new EntityManager();
 
             // A separate thread to make connections on
             new Thread(() =>
@@ -52,9 +50,24 @@ namespace Proftaak_Orientatie_Game.GameStates
 
                             lock (_players)
                             {
-                                packet.id = _players[connection].id;
-                                _players[connection] = packet;
+                                if (_players.ContainsKey(connection))
+                                {
+                                    packet.id = _players[connection].id;
+                                    _players[connection] = packet;
+                                }
                             }
+                        }
+
+                        if (Packet.GetType(data) == PACKET_TYPES.PLAYER_SHOOT)
+                        {
+                            var packet = Packet.Deserialize<PlayerShootPacket>(data);
+
+                            lock (_players)
+                                if (_players.ContainsKey(connection))
+                                    packet.id = _players[connection].id;
+
+                            lock (_actions)
+                                _actions.Enqueue(packet);
                         }
                     });
 
@@ -125,6 +138,12 @@ namespace Proftaak_Orientatie_Game.GameStates
 
                 while (removal.Count > 0)
                     _players.Remove(removal.Dequeue());
+            }
+
+            lock (_actions)
+            {
+                foreach (var action in _actions)
+                    BroadCast(Packet.Serialize(action));
             }
         }
 

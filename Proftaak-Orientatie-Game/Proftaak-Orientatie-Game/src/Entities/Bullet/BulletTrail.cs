@@ -23,7 +23,7 @@ namespace Proftaak_Orientatie_Game.Entities.Bullet
             _line[1] = new Vertex(stop, new Color(255, 255, 255, (byte)((_time / TOTAL_TIME) * 255)));
         }
 
-        public override void OnUpdate(float deltatime, EntityManager entityManager, RenderWindow window)
+        public override void OnUpdate(float deltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window)
         {
             _time -= deltatime;
 
@@ -31,7 +31,7 @@ namespace Proftaak_Orientatie_Game.Entities.Bullet
                 MarkForDeletion();
         }
 
-        public override void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, RenderWindow window)
+        public override void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window)
         {
         }
 

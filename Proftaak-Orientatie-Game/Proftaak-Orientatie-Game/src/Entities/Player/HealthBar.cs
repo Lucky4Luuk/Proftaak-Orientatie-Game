@@ -37,13 +37,13 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             };
         }
 
-        public override void OnUpdate(float deltatime, EntityManager entityManager, RenderWindow window)
+        public override void OnUpdate(float deltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window)
         {
             if(_target.HasDeletionMark())
                 MarkForDeletion();
         }
 
-        public override void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, RenderWindow window)
+        public override void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window)
         {}
 
         public override void OnDraw(float deltatime, RenderWindow window)
