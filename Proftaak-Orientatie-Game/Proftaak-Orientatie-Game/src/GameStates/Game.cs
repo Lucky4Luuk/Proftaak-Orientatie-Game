@@ -58,7 +58,7 @@ namespace Proftaak_Orientatie_Game.GameStates
             Console.WriteLine("Connecting...");
             try
             {
-                _serverConnection = new Connection(IPAddress.Parse("127.0.0.1"), 42069,
+                _serverConnection = new Connection(IPAddress.Parse("145.93.104.83"), 42069,
                     (connection, data) => { _sceneBuffer.Process(data); }
                 );
                 _connectionBuffer  = new ConnectionBuffer(_serverConnection);
