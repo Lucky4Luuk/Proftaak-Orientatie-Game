@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.Networking;
+using Proftaak_Orientatie_Game.World;
 using SFML.Graphics;
 
 namespace Proftaak_Orientatie_Game.Entities.Player
@@ -36,7 +37,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             }
         }
 
-        public override void Update(RenderWindow window, float deltatime)
+        public override void Update(RenderWindow window, float deltatime, Camera camera)
         {
             PlayerUpdatePacket? packet = _buffer.GetData(_id);
 

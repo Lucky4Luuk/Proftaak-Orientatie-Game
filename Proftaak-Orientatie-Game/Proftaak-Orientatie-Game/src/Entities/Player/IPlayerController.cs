@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Proftaak_Orientatie_Game.World;
 using SFML.Graphics;
 using SFML.System;
 
@@ -19,6 +20,6 @@ namespace Proftaak_Orientatie_Game.Entities.Player
         public Vector2f ShotDirection { get; set; }
 
         public abstract void FixedUpdate(RenderWindow window, float fixedDeltatime);
-        public abstract void Update(RenderWindow window, float deltatime);
+        public abstract void Update(RenderWindow window, float deltatime, Camera camera);
     }
 }

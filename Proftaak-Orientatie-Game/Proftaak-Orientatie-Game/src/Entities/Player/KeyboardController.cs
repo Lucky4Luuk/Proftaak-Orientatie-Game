@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Proftaak_Orientatie_Game.World;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
@@ -49,7 +50,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             }
         }
 
-        public override void Update(RenderWindow window, float deltatime)
+        public override void Update(RenderWindow window, float deltatime, Camera camera)
         {
             if (window.HasFocus())
             {
@@ -73,8 +74,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
                     ShotOrigin = Position;
                     ShotDirection = Direction;
 
-                    //camera.Shake(15f, 0.98f, 0.2f, 2f);
-                    //camera.Recoil(15f, Direction);
+                    camera.Recoil(15f, Direction);
                     _shootCooldown = TOTAL_SHOOT_COOLDOWN;
                 }
 
