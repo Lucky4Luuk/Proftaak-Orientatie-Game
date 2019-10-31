@@ -43,7 +43,7 @@ namespace Proftaak_Orientatie_Game.GameStates
             _entityManager = new EntityManager();
 
             Player player = new Player(new Vector2f(300.0f, 300.0f), new KeyboardController(), playerTexture,
-                healthBarTexture, _entityManager)
+                healthBarTexture, _entityManager, camera)
             {
                 Active = true
             };
