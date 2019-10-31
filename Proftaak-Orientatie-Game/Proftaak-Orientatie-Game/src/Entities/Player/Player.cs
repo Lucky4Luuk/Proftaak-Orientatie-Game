@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.SpriteUtils;
+using Proftaak_Orientatie_Game.World;
 using Proftaak_Orientatie_Game.Entities;
 using Proftaak_Orientatie_Game.Networking;
 using SFML.Graphics;
@@ -29,6 +30,8 @@ namespace Proftaak_Orientatie_Game.Entities.Player
         private readonly Sprite _sprite;
         private readonly IPlayerController _playerController;
 
+        private Camera camera;
+
         enum Direction { DOWN = 0, RIGHT, LEFT, UP }
         private readonly Animation[] _animations = {
             new Animation(16, 16, 32, new [] {0,1}),
@@ -39,7 +42,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
         private Direction _currentDirection;
 
-        public Player(Vector2f spawnPositon, IPlayerController playerController, Texture playerTexture, Texture healthBarTexture, EntityManager manager)
+        public Player(Vector2f spawnPositon, IPlayerController playerController, Texture playerTexture, Texture healthBarTexture, EntityManager manager, Camera _camera)
         {
             manager.Add(new HealthBar(healthBarTexture, this));
 
@@ -54,6 +57,8 @@ namespace Proftaak_Orientatie_Game.Entities.Player
                 Origin = new Vector2f(_animations[0].GetShape().Width * 0.5f, _animations[0].GetShape().Height * 0.5f)
             };
             _currentDirection = Direction.DOWN;
+
+            camera = _camera;
         }
 
         public override void OnUpdate(float deltatime, EntityManager entityManager, RenderWindow window)
@@ -97,6 +102,8 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             if (shoot && _shootCooldown <= 0.0f)
             {
                 entityManager.ShootBullet(new Bullet.Bullet(_sprite.Position, _playerController.Direction), 800.0f);
+                //camera.Shake(15f, 0.98f, 0.2f, 2f);
+                camera.Recoil(15f, _playerController.Direction);
                 _shootCooldown = TOTAL_SHOOT_COOLDOWN;
             }
 

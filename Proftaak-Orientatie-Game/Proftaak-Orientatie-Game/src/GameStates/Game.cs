@@ -30,8 +30,13 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         private Camera camera = new Camera();
 
+        private Text debugText;
+        private Font font;
+
         public override void OnCreate()
         {
+            font = new Font("res/fonts/defaultFont.ttf");
+
             Texture playerTexture = new Texture("res/textures/player.png");
             Texture healthBarTexture = new Texture("res/textures/healthbar.png");
 
@@ -70,6 +75,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         public override void OnUpdate(float deltatime, RenderWindow window)
         {
             _entityManager.Update(deltatime, window);
+            camera.Update(deltatime);
         }
 
         public override void OnFixedUpdate(float fixedDeltaTime, RenderWindow window)
@@ -81,10 +87,14 @@ namespace Proftaak_Orientatie_Game.GameStates
         {
             Player player = _entityManager.ActivePlayer;
             camera.viewport.Size = (Vector2f)window.Size;
-            camera.viewport.Center = player.getPosition();
+            //camera.viewport.Center = player.getPosition();
+            camera.SetPosition(player.getPosition());
             window.SetView(camera.viewport);
             _curLevel.OnDraw(deltatime, window);
             _entityManager.Draw(deltatime, window);
+
+            debugText = new Text(string.Format("Duration: {0}\nIntensity: {1}\nVelocity: {2}", camera.shakeDuration, camera.shakeIntensity, camera.shakeVelocity), font);
+            window.Draw(debugText);
         }
 
         public override void OnTick()
