@@ -103,7 +103,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             {
                 entityManager.ShootBullet(new Bullet.Bullet(_sprite.Position, _playerController.Direction), 800.0f);
                 //camera.Shake(15f, 0.98f, 0.2f, 2f);
-                camera.Recoil(15f, _playerController.Direction);
+                camera.Recoil(25f, _playerController.Direction);
                 _shootCooldown = TOTAL_SHOOT_COOLDOWN;
             }
 

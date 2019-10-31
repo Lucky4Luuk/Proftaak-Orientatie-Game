@@ -96,6 +96,7 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public override void OnUpdate(float deltatime, RenderWindow window)
         {
+            info = new Text(string.Format("Server\nPlayer count: {0}", _clients.Count()), font);
             //_entityManager.Update(deltatime);
         }
 
