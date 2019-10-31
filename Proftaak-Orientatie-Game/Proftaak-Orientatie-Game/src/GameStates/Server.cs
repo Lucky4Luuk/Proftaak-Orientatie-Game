@@ -82,8 +82,17 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public void BroadCast(byte[] data)
         {
-            foreach (var client in _clients)
-                client.Send(data);
+            for (int i = 0; i < _clients.Count; i++)
+            {
+                try
+                {
+                    _clients[i].Send(data);
+                }
+                catch (Exception)
+                {
+                    _clients.RemoveAt(i--);
+                }
+            }
         }
 
         public override void OnUpdate(float deltatime, RenderWindow window)
