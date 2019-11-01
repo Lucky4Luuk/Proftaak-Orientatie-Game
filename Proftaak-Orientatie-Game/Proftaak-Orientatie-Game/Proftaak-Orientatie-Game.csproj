@@ -89,6 +89,7 @@
     <Compile Include="src\UI\Button.cs" />
     <Compile Include="src\World\Camera.cs" />
     <Compile Include="src\World\Level.cs" />
+    <Compile Include="src\World\Noise.cs" />
     <Compile Include="src\World\TileMap.cs" />
   </ItemGroup>
   <ItemGroup>

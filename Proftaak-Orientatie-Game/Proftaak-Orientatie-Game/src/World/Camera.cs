@@ -16,18 +16,11 @@ namespace Proftaak_Orientatie_Game.World
         private Vector2f _position = new Vector2f(0f, 0f);
         private Vector2f _targetPosition = new Vector2f(0.0f, 0.0f);
 
-        private Random rng = new Random();
-
-        public float shakeIntensity = 0f;
-        public float shakeDropOff = 1f;
-        public float shakeFrequency = 0f;
-        public float shakeDuration = 0f;
-        public Vector2f shakeVelocity = new Vector2f(0f, 0f);
-        private Vector2f shakeOffset = new Vector2f(0f, 0f);
-
-        public float recoilIntensity = 0f;
-        public Vector2f recoilVelocity = new Vector2f(0f, 0f);
-        private Vector2f recoilOffset = new Vector2f(0f, 0f);
+        private const float SHAKE_INTENSITY_MULTIPLIER = 64.0f;
+        private const float SHAKE_DROPOFF_SPEED = 1.0f;
+        private const float SHAKE_FREQUENCY = 6.0f;
+        private float _shakeIntensity;
+        private float _time = 0.0f;
 
         public Camera()
         {}
@@ -37,49 +30,31 @@ namespace Proftaak_Orientatie_Game.World
             _targetPosition = position;
         }
 
-        public void Shake(float intensity, float dropOff, float frequency, float duration)
+        public void Shake(float intensity)
         {
-            shakeIntensity = intensity;
-            shakeDropOff = dropOff;
-            shakeFrequency = frequency;
-            shakeDuration = duration;
-        }
-
-        public void Recoil(float intensity, Vector2f direction)
-        {
-            recoilVelocity -= direction * intensity;
+            _shakeIntensity += intensity;
+            if (_shakeIntensity > 1.0f)
+                _shakeIntensity = 1.0f;
         }
 
         public void Update(float deltaTime)
         {
-            if (shakeDuration > 0)
-            {
-                if ((shakeDuration * 500) % 1f < 0.1f)
-                {
-                    Console.WriteLine("New shake velocity");
-                    float weightX = shakeOffset.X / shakeIntensity;
-                    float weightY = shakeOffset.Y / shakeIntensity;
-                    float velX = ((float)rng.NextDouble()) * 2f - 1f + weightX * 0.5f;
-                    float velY = ((float)rng.NextDouble()) * 2f - 1f + weightY * 0.5f;
-                    shakeVelocity = new Vector2f(velX * shakeIntensity, velY * shakeIntensity);
-                }
-
-                shakeOffset += shakeVelocity * deltaTime;
-
-                shakeIntensity *= shakeDropOff;
-                shakeVelocity *= shakeDropOff;
-                shakeDuration -= deltaTime;
-            } else
-            {
-                shakeOffset = new Vector2f(0f, 0f);
-            }
-
             _position = (_targetPosition * 0.5f + _position * 0.5f);
+            _time += deltaTime;
 
-            recoilVelocity *= 0.9f;
-            recoilOffset = recoilVelocity * deltaTime;
+            // Decrease the amount of shaking over time
+            _shakeIntensity -= SHAKE_DROPOFF_SPEED * deltaTime;
+            if (_shakeIntensity < 0.0f)
+                _shakeIntensity = 0.0f;
 
-            viewport.Center = _position + shakeOffset * shakeIntensity + recoilOffset;
+            // Square the intensity to get less shake in lower intensity levels
+            float actualShakeIntensity = _shakeIntensity * _shakeIntensity * SHAKE_INTENSITY_MULTIPLIER;
+
+            // Calculate the offset
+            Vector2f shakeOffset = new Vector2f(Noise.Calc1D(_time, SHAKE_FREQUENCY), Noise.Calc1D(_time + 100.0f, SHAKE_FREQUENCY));
+            shakeOffset *= actualShakeIntensity;
+
+            viewport.Center = _position + shakeOffset;
         }
 
         public void FixedUpdate(float fixedDeltaTime)

@@ -25,7 +25,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
         private readonly Sprite _sprite;
         private readonly IPlayerController _playerController;
 
-        private Camera camera;
+        public Camera Camera { get; set; }
 
         enum Direction { DOWN = 0, RIGHT, LEFT, UP }
         private readonly Animation[] _animations = {
@@ -52,7 +52,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             };
             _currentDirection = Direction.DOWN;
 
-            camera = _camera;
+            Camera = _camera;
         }
 
         public override void OnUpdate(float deltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window)
@@ -62,7 +62,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
             // Update the player controller
             _playerController.Position = _sprite.Position;
-            _playerController.Update(window, deltatime, camera);
+            _playerController.Update(window, deltatime, Camera);
             _sprite.Position = _playerController.Position;
 
             // Update the direction
