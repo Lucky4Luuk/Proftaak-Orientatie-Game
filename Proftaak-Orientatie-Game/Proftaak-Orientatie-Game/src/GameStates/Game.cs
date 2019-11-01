@@ -86,15 +86,17 @@ namespace Proftaak_Orientatie_Game.GameStates
         public override void OnDraw(float deltatime, RenderWindow window)
         {
             Player player = _entityManager.ActivePlayer;
-            camera.viewport.Size = (Vector2f)window.Size;
+            camera.viewport.Size = (Vector2f)window.Size / 3.0f;
             //camera.viewport.Center = player.getPosition();
-            camera.SetPosition(player.getPosition());
+            camera.SetTargetPosition(player.getPosition());
             window.SetView(camera.viewport);
             _curLevel.OnDraw(deltatime, window);
             _entityManager.Draw(deltatime, window);
 
             debugText = new Text(string.Format("Duration: {0}\nIntensity: {1}\nVelocity: {2}", camera.shakeDuration, camera.shakeIntensity, camera.shakeVelocity), font);
             window.Draw(debugText);
+
+            Console.Write("FPS: " + 1.0f / deltatime + "                             \r");
         }
 
         public override void OnTick()

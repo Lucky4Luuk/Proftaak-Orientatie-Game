@@ -13,7 +13,8 @@ namespace Proftaak_Orientatie_Game.World
     {
         public View viewport = new View(new Vector2f(0, 0), new Vector2f(256, 256));
 
-        private Vector2f position = new Vector2f(0f, 0f);
+        private Vector2f _position = new Vector2f(0f, 0f);
+        private Vector2f _targetPosition = new Vector2f(0.0f, 0.0f);
 
         private Random rng = new Random();
 
@@ -31,9 +32,9 @@ namespace Proftaak_Orientatie_Game.World
         public Camera()
         {}
 
-        public void SetPosition(Vector2f _position)
+        public void SetTargetPosition(Vector2f position)
         {
-            position = _position;
+            _targetPosition = position;
         }
 
         public void Shake(float intensity, float dropOff, float frequency, float duration)
@@ -73,10 +74,12 @@ namespace Proftaak_Orientatie_Game.World
                 shakeOffset = new Vector2f(0f, 0f);
             }
 
+            _position = (_targetPosition * 0.5f + _position * 0.5f);
+
             recoilVelocity *= 0.9f;
             recoilOffset = recoilVelocity * deltaTime;
 
-            viewport.Center = position + shakeOffset * shakeIntensity + recoilOffset;
+            viewport.Center = _position; //shakeOffset * shakeIntensity + recoilOffset;
         }
 
         public void FixedUpdate(float fixedDeltaTime)

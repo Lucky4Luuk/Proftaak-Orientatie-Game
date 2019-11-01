@@ -12,7 +12,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 {
     class HealthBar : IEntity
     {
-        private static readonly Vector2f OFFSET = new Vector2f(0.0f, -40.0f);
+        private static readonly Vector2f OFFSET = new Vector2f(0.0f, -16.0f);
 
         private readonly Player _target;
 
@@ -26,13 +26,11 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             _background = new Sprite(healthBarTexture)
             {
                 TextureRect = new IntRect(0, 0, 16, 8),
-                Scale = new Vector2f(3.0f, 3.0f),
                 Origin = new Vector2f(8.0f, 4.0f)
             };
 
             _bar = new Sprite(healthBarTexture)
             {
-                Scale = new Vector2f(3.0f, 3.0f),
                 Origin = new Vector2f(8.0f, 4.0f)
             };
         }
