@@ -13,17 +13,17 @@ namespace Proftaak_Orientatie_Game.Entities.Player
     class NetworkController : IPlayerController
     {
         private readonly SceneBuffer _buffer;
-        private readonly int _id;
-        
+        public int Id { get; }
+
         public NetworkController(SceneBuffer buffer, int id)
         {
             _buffer = buffer;
-            _id = id;
+            Id = id;
         }
 
         public override void FixedUpdate(RenderWindow window, float fixedDeltatime)
         {
-            PlayerUpdatePacket? packet = _buffer.GetData(_id);
+            PlayerUpdatePacket? packet = _buffer.GetData(Id);
 
             if (packet.HasValue)
             {
@@ -39,13 +39,14 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
         public override void Update(RenderWindow window, float deltatime, Camera camera)
         {
-            PlayerUpdatePacket? packet = _buffer.GetData(_id);
+            PlayerUpdatePacket? packet = _buffer.GetData(Id);
 
             if (packet.HasValue)
             {
                 Position = packet.Value.position;
                 Velocity = packet.Value.velocity;
                 Direction = packet.Value.direction;
+                Health = packet.Value.health;
             }
             else
             {

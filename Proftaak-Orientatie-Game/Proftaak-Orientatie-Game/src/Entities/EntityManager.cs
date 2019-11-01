@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Proftaak_Orientatie_Game.Entities.Bullet;
 using Proftaak_Orientatie_Game.Networking;
 using SFML.Graphics;
@@ -12,9 +13,35 @@ namespace Proftaak_Orientatie_Game.Entities
 
         public Player.Player ActivePlayer { get; set; }
 
-        public void ShootBullet(Bullet.Bullet bullet, float range)
+        public void ShootBullet(bool myBullet, int origin, Bullet.Bullet bullet, float range)
         {
-            Add(new BulletTrail(bullet.Origin, bullet.Origin + bullet.Direction * range));
+            Player.Player playerHit = null;
+            float distance = range;
+
+            foreach (var player in _entities.OfType<Player.Player>())
+            {
+                if (player != ActivePlayer && player.GetId() == origin)
+                    continue;
+
+                if (player == ActivePlayer && myBullet)
+                    continue;
+
+                float? dist = bullet.Intersects(player.getPosition(), player.getSize());
+
+                if (dist.HasValue)
+                {
+                    if (dist.Value < distance)
+                    {
+                        playerHit = player;
+                        distance = dist.Value;
+                    }
+                }
+            }
+
+            if (playerHit == ActivePlayer && ActivePlayer != null)
+                ActivePlayer.Health -= 10.0f;
+
+            Add(new BulletTrail(bullet.Origin, bullet.Origin + bullet.Direction * distance));
         }
 
         public void Add(IEntity entity)

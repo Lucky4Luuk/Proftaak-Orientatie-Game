@@ -60,7 +60,7 @@ namespace Proftaak_Orientatie_Game.GameStates
 
                         if (Packet.GetType(data) == PACKET_TYPES.PLAYER_SHOOT)
                         {
-                            var packet = Packet.Deserialize<PlayerShootPacket>(data);
+                            PlayerShootPacket packet = Packet.Deserialize<PlayerShootPacket>(data);
 
                             lock (_players)
                                 if (_players.ContainsKey(connection))
@@ -142,8 +142,8 @@ namespace Proftaak_Orientatie_Game.GameStates
 
             lock (_actions)
             {
-                foreach (var action in _actions)
-                    BroadCast(Packet.Serialize(action));
+                while(_actions.Count > 0)
+                    BroadCast(Packet.Serialize(_actions.Dequeue()));
             }
         }
 

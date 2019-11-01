@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using Proftaak_Orientatie_Game.Entities.Player;
 using SFML.System;
 
 namespace Proftaak_Orientatie_Game.Networking
@@ -110,5 +111,14 @@ namespace Proftaak_Orientatie_Game.Networking
         public int id;
         public Vector2f origin;
         public Vector2f direction;
+
+        public PlayerShootPacket(int id, Vector2f origin, Vector2f direction)
+        {
+            packetType = PACKET_TYPES.PLAYER_SHOOT;
+
+            this.id = id;
+            this.origin = origin;
+            this.direction = direction;
+        }
     }
 }

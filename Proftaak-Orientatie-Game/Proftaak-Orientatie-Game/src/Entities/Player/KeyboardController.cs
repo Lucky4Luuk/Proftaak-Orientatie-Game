@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Proftaak_Orientatie_Game.Networking;
 using Proftaak_Orientatie_Game.World;
 using SFML.Graphics;
 using SFML.System;
@@ -74,7 +75,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
                     ShotOrigin = Position;
                     ShotDirection = Direction;
 
-                    camera.Recoil(50f, Direction);
+                    camera.Recoil(250f, Direction);
                     _shootCooldown = TOTAL_SHOOT_COOLDOWN;
                 }
 

@@ -104,14 +104,18 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             // Shoot a bullet
             if (_playerController.ShotOrigin.HasValue)
             {
-                entityManager.ShootBullet(
+                entityManager.ShootBullet(true, -1,
                     new Bullet.Bullet(_playerController.ShotOrigin.Value, _playerController.ShotDirection), 800.0f);
+                buffer.Add(new PlayerShootPacket(-1, _playerController.ShotOrigin.Value, _playerController.ShotDirection));
             }
 
             _sprite.TextureRect = _animations[(int)_currentDirection].GetShape();
 
             if (_playerController.DeletionMark)
                 MarkForDeletion();
+
+            if(!Active)
+                Health = _playerController.Health;
         }
 
         public override void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window)
@@ -133,7 +137,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
         public override void OnTick(ConnectionBuffer buffer)
         {
             if(Active)
-                buffer.Add(new PlayerUpdatePacket(0, Health, _sprite.Position, _playerController.Velocity, _playerController.Direction));
+                buffer.Add(new PlayerUpdatePacket(-1, Health, _sprite.Position, _playerController.Velocity, _playerController.Direction));
         }
 
         public override Vector2f getPosition()
@@ -143,7 +147,12 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
         public override Vector2f getSize()
         {
-            return new Vector2f(_sprite.GetLocalBounds().Width, _sprite.GetLocalBounds().Height);
+            return new Vector2f(_sprite.GetLocalBounds().Width, _sprite.GetLocalBounds().Height) * 2.0f;
+        }
+
+        public int GetId()
+        {
+            return ((NetworkController) _playerController).Id;
         }
     }
 }

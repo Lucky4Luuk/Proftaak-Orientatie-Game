@@ -19,6 +19,8 @@ namespace Proftaak_Orientatie_Game.Entities.Player
         public Vector2f? ShotOrigin { get; set; } = null;
         public Vector2f ShotDirection { get; set; }
 
+        public float Health { get; set; } = Player.MAX_HEALTH;
+
         public abstract void FixedUpdate(RenderWindow window, float fixedDeltatime);
         public abstract void Update(RenderWindow window, float deltatime, Camera camera);
     }
