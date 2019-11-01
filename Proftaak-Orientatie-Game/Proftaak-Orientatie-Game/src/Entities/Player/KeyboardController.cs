@@ -22,7 +22,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
         {
             if (window.HasFocus())
             {
-                const float speed = 200.0f;
+                const float speed = 100.0f;
 
                 // Register inputs
                 bool up = Keyboard.IsKeyPressed(Keyboard.Key.W) || Keyboard.IsKeyPressed(Keyboard.Key.Up);

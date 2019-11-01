@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.Networking;
+using Proftaak_Orientatie_Game.src.Entities.Bullet;
 using SFML.Graphics;
 using SFML.System;
 
@@ -14,13 +15,11 @@ namespace Proftaak_Orientatie_Game.Entities.Bullet
         private const float TOTAL_TIME = 0.25f;
         private float _time = TOTAL_TIME;
 
-        private readonly VertexArray _line;
+        private readonly Line _trail;
 
-        public BulletTrail(Vector2f start, Vector2f stop)
+        public BulletTrail(Vector2f start, Vector2f direction, float distance)
         {
-            _line = new VertexArray(PrimitiveType.LineStrip, 2);
-            _line[0] = new Vertex(start, new Color(255, 255, 255, 0));
-            _line[1] = new Vertex(stop, new Color(255, 255, 255, (byte)((_time / TOTAL_TIME) * 255)));
+            _trail = new Line(start, direction, Color.White, distance, 5.0f);
         }
 
         public override void OnUpdate(float deltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window)
@@ -37,9 +36,8 @@ namespace Proftaak_Orientatie_Game.Entities.Bullet
 
         public override void OnDraw(float deltatime, RenderWindow window)
         {
-            _line[0] = new Vertex(_line[0].Position, new Color(255, 255, 255, 0));
-            _line[1] = new Vertex(_line[1].Position, new Color(255, 255, 255, (byte)((_time / TOTAL_TIME) * 255)));
-            window.Draw(_line);
+            _trail.Color = new Color(255, 255, 255, (byte)((_time / TOTAL_TIME) * 255));
+            _trail.Draw(window);
         }
 
         public override void OnTick(ConnectionBuffer buffer)

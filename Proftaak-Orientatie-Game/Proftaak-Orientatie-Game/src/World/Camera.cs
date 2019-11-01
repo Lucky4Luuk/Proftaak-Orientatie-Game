@@ -79,7 +79,7 @@ namespace Proftaak_Orientatie_Game.World
             recoilVelocity *= 0.9f;
             recoilOffset = recoilVelocity * deltaTime;
 
-            viewport.Center = _position; //shakeOffset * shakeIntensity + recoilOffset;
+            viewport.Center = _position + shakeOffset * shakeIntensity + recoilOffset;
         }
 
         public void FixedUpdate(float fixedDeltaTime)

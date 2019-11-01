@@ -146,7 +146,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
         public override Vector2f getSize()
         {
-            return new Vector2f(_sprite.GetLocalBounds().Width, _sprite.GetLocalBounds().Height) * 2.0f;
+            return new Vector2f(_sprite.GetLocalBounds().Width, _sprite.GetLocalBounds().Height);
         }
 
         public int GetId()

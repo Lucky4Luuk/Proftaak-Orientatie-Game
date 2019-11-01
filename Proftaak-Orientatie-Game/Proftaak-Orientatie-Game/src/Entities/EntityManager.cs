@@ -41,7 +41,7 @@ namespace Proftaak_Orientatie_Game.Entities
             if (playerHit == ActivePlayer && ActivePlayer != null)
                 ActivePlayer.Health -= 10.0f;
 
-            Add(new BulletTrail(bullet.Origin, bullet.Origin + bullet.Direction * distance));
+            Add(new BulletTrail(bullet.Origin, bullet.Direction, distance));
         }
 
         public void Add(IEntity entity)
