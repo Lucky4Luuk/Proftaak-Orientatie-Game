@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -20,10 +21,15 @@ namespace Proftaak_Orientatie_Game.GameStates
     {
         private ConnectionBuffer _connectionBuffer;
 
-        private EntityManager _entityManager;
+        private EntityManager _entityManager = new EntityManager();
         private Level _curLevel;
 
         private Connection _serverConnection;
+
+        private Texture playerTexture = new Texture("res/textures/player.png");
+        private Texture healthBarTexture = new Texture("res/textures/healthbar.png");
+
+
         private SceneBuffer _sceneBuffer;
 
         private readonly Font _font = new Font("res/fonts/defaultFont.ttf");
@@ -33,14 +39,9 @@ namespace Proftaak_Orientatie_Game.GameStates
         private Text debugText;
         private Font font;
 
-        public override void OnCreate()
+        public Game(Connection serverConnection)
         {
-            font = new Font("res/fonts/defaultFont.ttf");
-
-            Texture playerTexture = new Texture("res/textures/player.png");
-            Texture healthBarTexture = new Texture("res/textures/healthbar.png");
-
-            _entityManager = new EntityManager();
+            _serverConnection = serverConnection;
 
             Player player = new Player(new Vector2f(300.0f, 300.0f), new KeyboardController(), playerTexture,
                 healthBarTexture, _entityManager, camera)
@@ -51,25 +52,17 @@ namespace Proftaak_Orientatie_Game.GameStates
             _entityManager.Add(player);
             _entityManager.ActivePlayer = player;
 
-            _curLevel = new TileMap("res/maps/test.tmx");
-
             _sceneBuffer = new SceneBuffer(playerTexture, healthBarTexture, _entityManager);
+            _serverConnection.SetCallback((connection, data)=> { _sceneBuffer.Process(data); });
+        }
 
-            Console.WriteLine("Connecting...");
-            try
-            {
-                _serverConnection = new Connection(IPAddress.Parse("127.0.0.1"), 42069,
-                    (connection, data) => { _sceneBuffer.Process(data); }
-                );
-                _connectionBuffer  = new ConnectionBuffer(_serverConnection);
+        public override void OnCreate()
+        {
 
-                Console.WriteLine("Connected!");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                RequestNewState(new Menu());
-            }
+            _connectionBuffer = new ConnectionBuffer(_serverConnection);
+
+            font = new Font("res/fonts/defaultFont.ttf");
+            _curLevel = new TileMap("res/maps/test.tmx");
         }
 
         public override void OnUpdate(float deltatime, RenderWindow window)
@@ -98,9 +91,17 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public override void OnTick()
         {
-            _entityManager.OnTick(_connectionBuffer);
+            if (_sceneBuffer.ReturnToLobby)
+            {
+                _serverConnection.Close();
+                RequestNewState(new Lobby());
+            }
+            else
+            {
+                _entityManager.OnTick(_connectionBuffer);
 
-            _connectionBuffer.Send();
+                _connectionBuffer.Send();
+            }
         }
 
         public override void OnDestroy()

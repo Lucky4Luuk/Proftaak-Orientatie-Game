@@ -12,13 +12,18 @@ namespace Proftaak_Orientatie_Game.Networking
         public delegate void OnPacket(Connection connection, byte[] data);
 
         private readonly Queue<byte[]> _packets = new Queue<byte[]>();
-        private readonly OnPacket _callback;
+        private OnPacket _callback;
         private readonly Connection _parent;
 
         public ThreadLauncher(Connection connection, OnPacket callback)
         {
             _callback = callback;
             _parent = connection;
+        }
+
+        public void SetCallback(OnPacket callback)
+        {
+            _callback = callback;
         }
 
         public void Request(byte[] packet)
@@ -42,8 +47,10 @@ namespace Proftaak_Orientatie_Game.Networking
             {
                 byte[] packet = null;
                 while (DoStuff(packets, ref packet))
+                {
                     callback(connection, packet);
-                
+                }
+
             }).Start();
         }
 

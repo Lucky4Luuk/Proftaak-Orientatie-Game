@@ -18,17 +18,17 @@ namespace Proftaak_Orientatie_Game.GameStates
         public override void OnCreate()
         {
             Font font = new Font("res/fonts/defaultFont.ttf");
-            _playButton = new Button(new Vector2f(200.0f, 100.0f), new Vector2f(300.0f, 50.0f),
+            _playButton = new Button(new Vector2f(0.0f, 0.0f), new Vector2f(500.0f, 50.0f),
                 new Color(0,0,0, 100), new Color(50, 50, 50, 100), new Color(100, 100, 100, 100),
                 Color.White,
                 "Play", font
             );
-            _serverButton = new Button(new Vector2f(200.0f, 200.0f), new Vector2f(300.0f, 50.0f),
+            _serverButton = new Button(new Vector2f(0.0f, 100.0f), new Vector2f(500.0f, 50.0f),
                 new Color(0,0,0, 100), new Color(50, 50, 50, 100), new Color(100, 100, 100, 100),
                 Color.White,
-                "Server", font
+                "Host Server", font
             );
-            _playButton.OnPress += (object sender, EventArgs args) => { RequestNewState(new Game()); };
+            _playButton.OnPress += (object sender, EventArgs args) => { RequestNewState(new Lobby()); };
             _serverButton.OnPress += (object sender, EventArgs args) => { RequestNewState(new Server()); };
         }
 
@@ -42,6 +42,8 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public override void OnDraw(float deltatime, RenderWindow window)
         {
+            window.SetView(new View(new Vector2f(0.0f, 0.0f), (Vector2f)window.Size));
+
             _playButton.Update(window);
             _serverButton.Update(window);
 

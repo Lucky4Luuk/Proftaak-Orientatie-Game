@@ -23,12 +23,21 @@ namespace Proftaak_Orientatie_Game.GameStates
         private Font font;
         private Text info;
 
-        private int nextId = 0;
+        private int _nextId = 0;
+        private bool _gameBusy = false;
+        private float _countdown;
+        private bool _countingDown = false;
+        private float _gameTime;
 
-        private readonly List<Connection> _clients = new List<Connection>();
+        private const int PLAYERS_REQUIRED_FOR_GAME = 2;
+        private const int COUNTDOWN_AFTER_ENOUGH_PLAYERS = 5;
+
+        private readonly List<Connection> _lobbyClients = new List<Connection>();
+        private readonly List<Connection> _gameClients = new List<Connection>();
         private readonly Dictionary<Connection, PlayerUpdatePacket> _players = new Dictionary<Connection, PlayerUpdatePacket>();
 
         private readonly Queue<IPacket> _actions = new Queue<IPacket>();
+        private bool _closeRequested;
 
         public override void OnCreate()
         {
@@ -38,7 +47,7 @@ namespace Proftaak_Orientatie_Game.GameStates
             // A separate thread to make connections on
             new Thread(() =>
             {
-                while (true)
+                while (!_closeRequested)
                 {
                     Connection client = Connection.Listen(42069, 
                     (connection, data) => {
@@ -56,6 +65,9 @@ namespace Proftaak_Orientatie_Game.GameStates
                                     _players[connection] = packet;
                                 }
                             }
+
+                            if (packet.health <= 0.0f)
+                                MoveToLobby(connection);
                         }
 
                         if (Packet.GetType(data) == PACKET_TYPES.PLAYER_SHOOT)
@@ -72,46 +84,102 @@ namespace Proftaak_Orientatie_Game.GameStates
                     });
 
                     // Adding new client
-                    lock (_clients)
-                    {
-                        _clients.Add(client);
-                    }
-
-                    lock (_players)
-                    {
-
-                        _players.Add(client, new PlayerUpdatePacket(nextId++, 100,
-                            new Vector2f(0.0f, 0.0f),
-                            new Vector2f(0.0f, 0.0f),
-                            new Vector2f(0.0f, 0.0f))
-                        );
-                        client.Send(Packet.Serialize(new PlayerSpawnPacket(_players.Last().Value.id, _players.Last().Value.position)));
-                    }
+                
+                    lock (_lobbyClients)
+                        _lobbyClients.Add(client);
                 }
             }).Start();
         }
 
-        public void BroadCast(byte[] data)
+        public void BroadCastGame(byte[] data)
         {
-            for (int i = 0; i < _clients.Count; i++)
+            lock (_gameClients)
             {
-                try
+                for (int i = 0; i < _gameClients.Count; i++)
                 {
-                    _clients[i].Send(data);
+                    try
+                    {
+                        _gameClients[i].Send(data);
+                    }
+                    catch (Exception)
+                    {
+                        lock (_players)
+                        {
+                            int id = _players[_gameClients[i]].id;
+                            _gameClients.RemoveAt(i--);
+                            BroadCastGame(Packet.Serialize(new PlayerDisconnectPacket(id)));
+                        }
+                    }
                 }
-                catch (Exception)
+            }
+        }
+
+        public void BroadCastLobby(byte[] data)
+        {
+            lock (_lobbyClients)
+            {
+                for (int i = 0; i < _lobbyClients.Count; i++)
                 {
-                    int id = _players[_clients[i]].id;
-                    _clients.RemoveAt(i--);
-                    BroadCast(Packet.Serialize(new PlayerDisconnectPacket(id)));
+                    try
+                    {
+                        _lobbyClients[i].Send(data);
+                    }
+                    catch (Exception)
+                    {
+                        _lobbyClients.RemoveAt(i--);
+                    }
                 }
             }
         }
 
         public override void OnUpdate(float deltatime, RenderWindow window)
         {
-            info = new Text(string.Format("Server\nPlayer count: {0}", _clients.Count()), font);
-            //_entityManager.Update(deltatime);
+            info = new Text(string.Format("Server\nPlayer count: " + _gameClients.Count + "\nLobby count: " + _lobbyClients.Count), font);
+
+            // Check if there are enough players in the lobby
+            bool enoughPlayers;
+            lock (_lobbyClients)
+                enoughPlayers = _lobbyClients.Count >= PLAYERS_REQUIRED_FOR_GAME;
+
+            if(enoughPlayers && !_gameBusy)
+            {
+                // Count down until the game starts
+                if(_countingDown == false)
+                    _countdown = COUNTDOWN_AFTER_ENOUGH_PLAYERS;
+
+                _countingDown = true;
+                _countdown -= deltatime;
+
+                if (_countdown < 0.0f)
+                {
+                    _gameBusy = true;
+                }
+            }
+            else
+            {
+                // Stop counting down
+                _countingDown = false;
+            }
+
+            if (_gameBusy && _gameTime > 5.0f && _gameClients.Count == 0)
+            {
+                lock(_players)
+                    _players.Clear();
+
+                lock(_gameClients)
+                    _gameClients.Clear();
+
+                _gameBusy = false;
+            }
+            
+            if (_gameBusy)
+            {
+                _gameTime += deltatime;
+            }
+            else
+            {
+                _gameTime = 0.0f;
+            }
         }
 
         public override void OnFixedUpdate(float fixedDeltaTime, RenderWindow window)
@@ -126,31 +194,122 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public override void OnTick()
         {
-            lock (_players)
+            // Update the game
             {
-                foreach (var player in _players)
-                    BroadCast(Packet.Serialize(player.Value));
+                lock (_players)
+                {
+                    foreach (var player in _players)
+                        BroadCastGame(Packet.Serialize(player.Value));
 
-                Queue<Connection> removal = new Queue<Connection>();
-                foreach (var player in _players)
-                    if (!_clients.Contains(player.Key))
-                        removal.Enqueue(player.Key);
+                    Queue<Connection> removal = new Queue<Connection>();
+                    foreach (var player in _players)
+                        if (!_gameClients.Contains(player.Key))
+                            removal.Enqueue(player.Key);
 
-                while (removal.Count > 0)
-                    _players.Remove(removal.Dequeue());
+                    while (removal.Count > 0)
+                        _players.Remove(removal.Dequeue());
+                }
+
+                lock (_actions)
+                {
+                    while (_actions.Count > 0)
+                        BroadCastGame(Packet.Serialize(_actions.Dequeue()));
+                }
+
+                Connection winner = null;
+
+                if(_gameBusy && _gameTime > 5.0f) {
+                    lock (_gameClients)
+                    {
+                        if (_gameClients.Count == 1)
+                        {
+                            winner = _gameClients[0];
+
+                            _gameBusy = false;
+
+                            _gameClients.Clear();
+                            _players.Clear();
+                        }
+                    }
+                }
+
+                if (winner != null)
+                {
+                    winner.Send(Packet.Serialize(new EpicVictoryRoyalePacket(0)));
+
+                    lock(_lobbyClients)
+                        _lobbyClients.Add(winner);
+                }
             }
 
-            lock (_actions)
+            // Update the lobby
             {
-                while(_actions.Count > 0)
-                    BroadCast(Packet.Serialize(_actions.Dequeue()));
+                LobbyInfoPacket.State state = LobbyInfoPacket.State.WAITING_FOR_PLAYERS;
+
+                if (_gameBusy)
+                {
+                    state = LobbyInfoPacket.State.GAME_IN_PROGRESS;
+                    if (_gameTime < 5.0f)
+                        state = LobbyInfoPacket.State.LOBBY_CLOSED;
+                }
+
+                if (_countingDown)
+                    state = LobbyInfoPacket.State.STARTING;
+
+                lock (_lobbyClients)
+                {
+                    BroadCastLobby(Packet.Serialize(new LobbyInfoPacket(state, _lobbyClients.Count,
+                        (int) Math.Round(_countdown))));
+
+                    if (state == LobbyInfoPacket.State.LOBBY_CLOSED)
+                    {
+                        Thread.Sleep(500);
+
+                        // TODO: pick spawnpoints
+                        foreach(var client in _lobbyClients)
+                        {
+                            int playerId = ++_nextId;
+
+                            client.Send(Packet.Serialize(new PlayerSpawnPacket(playerId, new Vector2f(500.0f, 500.0f))));
+                            _gameClients.Add(client);
+                            _players.Add(client, new PlayerUpdatePacket(
+                                playerId, Player.MAX_HEALTH, new Vector2f(0.0f, 0.0f), new Vector2f(0.0f, 0.0f), new Vector2f(0.0f, 0.0f)
+                            ));
+                        }
+                        _lobbyClients.Clear();
+                    }
+                }
             }
         }
 
         public override void OnDestroy()
         {
-            foreach (var client in _clients)
+            foreach (var client in _gameClients)
                 client.Close();
+
+            foreach (var client in _lobbyClients)
+                client.Close();
+
+            _closeRequested = true;
+        }
+
+        private void MoveToLobby(Connection connection)
+        {
+            lock (_players)
+            {
+                if (_players.ContainsKey(connection))
+                    _players.Remove(connection);
+            }
+
+            lock (_gameClients)
+            {
+                _gameClients.Remove(connection);
+            }
+
+            lock (_lobbyClients)
+            {
+                _lobbyClients.Add(connection);
+            }
         }
     }
 }

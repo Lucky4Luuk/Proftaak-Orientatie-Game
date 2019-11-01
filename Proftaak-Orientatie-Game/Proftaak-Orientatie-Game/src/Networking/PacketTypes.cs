@@ -15,6 +15,10 @@ namespace Proftaak_Orientatie_Game.Networking
         PLAYER_UPDATE = 1,
         PLAYER_SHOOT = 2,
         PLAYER_DISCONNECT = 3,
+
+        EPIC_VICTORY_ROYALE = 69,
+
+        LOBBY_INFO = 100
     }
 
     class Packet
@@ -119,6 +123,42 @@ namespace Proftaak_Orientatie_Game.Networking
             this.id = id;
             this.origin = origin;
             this.direction = direction;
+        }
+    }
+
+    struct EpicVictoryRoyalePacket : IPacket
+    {
+        public PACKET_TYPES packetType { get; set; }
+
+        public EpicVictoryRoyalePacket(int useless_but_required_because_this_is_a_struct_OwO)
+        {
+            packetType = PACKET_TYPES.EPIC_VICTORY_ROYALE;
+        }
+    }
+
+    struct LobbyInfoPacket : IPacket
+    {
+        public enum State : byte
+        {
+            WAITING_FOR_PLAYERS,
+            GAME_IN_PROGRESS,
+            STARTING,
+            
+            LOBBY_CLOSED,
+        }
+
+        public PACKET_TYPES packetType { get; set; }
+        public State state;
+        public int playerCount;
+        public int countdown;
+
+        public LobbyInfoPacket(State state, int playerCount, int countdown)
+        {
+            packetType = PACKET_TYPES.LOBBY_INFO;
+
+            this.state = state;
+            this.playerCount = playerCount;
+            this.countdown = countdown;
         }
     }
 }

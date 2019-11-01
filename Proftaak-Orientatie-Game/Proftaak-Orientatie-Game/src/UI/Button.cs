@@ -46,6 +46,8 @@ namespace Proftaak_Orientatie_Game.UI
             bool pressed = Mouse.IsButtonPressed(Mouse.Button.Left);
 
             Vector2f mousePos = new Vector2f(Mouse.GetPosition(window).X, Mouse.GetPosition(window).Y);
+            mousePos -= window.GetView().Size * 0.5f - window.GetView().Center;
+
             Vector2f delta = mousePos - _background.Position;
 
             if (Math.Abs(delta.X) < _background.Size.X * 0.5f && Math.Abs(delta.Y) < _background.Size.Y * 0.5f)
@@ -70,6 +72,15 @@ namespace Proftaak_Orientatie_Game.UI
         {
             window.Draw(_background);
             window.Draw(_text);
+        }
+
+        public void SetPosition(Vector2f position)
+        {
+            _text.Position = new Vector2f(
+                position.X - _text.GetLocalBounds().Width / 2,
+                position.Y - 3 * _text.GetLocalBounds().Height / 4
+            );
+            _background.Position = position;
         }
     }
 }

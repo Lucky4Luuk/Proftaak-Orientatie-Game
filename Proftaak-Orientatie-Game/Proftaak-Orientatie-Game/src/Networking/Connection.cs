@@ -23,17 +23,23 @@ namespace Proftaak_Orientatie_Game.Networking
         }
 
         private readonly Socket _socket;
+        private ThreadLauncher _launcher;
+
+        public void SetCallback(ThreadLauncher.OnPacket callback)
+        {
+            _launcher.SetCallback(callback);
+        }
 
         public Connection(IPAddress target, int port, ThreadLauncher.OnPacket callback)
         {
-            var threadLauncher = new ThreadLauncher(this, callback);
+            _launcher = new ThreadLauncher(this, callback);
 
             // Setup a TCP Connection
             byte[] buffer = new byte[1];
 
             _socket = new Socket(target.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             _socket.Connect(new IPEndPoint(target, port));
-            _socket.BeginReceive(buffer, 0, 1, 0, AsyncReceiveCallback, new PacketData(true, buffer, _socket, threadLauncher));
+            _socket.BeginReceive(buffer, 0, 1, 0, AsyncReceiveCallback, new PacketData(true, buffer, _socket, _launcher));
         }
 
         private Connection(Socket socket, ThreadLauncher.OnPacket callback)
@@ -86,7 +92,7 @@ namespace Proftaak_Orientatie_Game.Networking
             PacketData state = (PacketData) ar.AsyncState;
             if (state.searching)
             {
-                // Received the lenght of the packet
+                // Received the length of the packet
                 int packetSize = state.data[0];
 
                 // Prepare to receive content

@@ -78,6 +78,7 @@
     <Compile Include="src\GameStates\IGameState.cs" />
     <Compile Include="src\Application.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\GameStates\Lobby.cs" />
     <Compile Include="src\GameStates\Menu.cs" />
     <Compile Include="src\GameStates\Server.cs" />
     <Compile Include="src\Networking\Connection.cs" />

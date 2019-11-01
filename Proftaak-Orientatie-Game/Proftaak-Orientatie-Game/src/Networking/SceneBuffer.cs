@@ -17,6 +17,8 @@ namespace Proftaak_Orientatie_Game.Networking
         private readonly Texture _healthBarTexture;
         private readonly EntityManager _entityManager;
 
+        public bool ReturnToLobby { get; set; }
+
         public int MyId { get; private set; }
 
         private readonly Dictionary<int, PlayerUpdatePacket> _players = new Dictionary<int, PlayerUpdatePacket>();
@@ -72,6 +74,11 @@ namespace Proftaak_Orientatie_Game.Networking
                     return;
 
                 _entityManager.ShootBullet(false, packet.id, new Bullet(packet.origin, packet.direction), 800.0f);
+            }
+
+            if (Packet.GetType(data) == PACKET_TYPES.LOBBY_INFO)
+            {
+                ReturnToLobby = true;
             }
         }
 
