@@ -29,8 +29,8 @@ namespace Proftaak_Orientatie_Game.GameStates
         private bool _countingDown = false;
         private float _gameTime;
 
-        private const int PLAYERS_REQUIRED_FOR_GAME = 2;
-        private const int COUNTDOWN_AFTER_ENOUGH_PLAYERS = 5;
+        private const int PLAYERS_REQUIRED_FOR_GAME = 3;
+        private const int COUNTDOWN_AFTER_ENOUGH_PLAYERS = 15;
 
         private readonly List<Connection> _lobbyClients = new List<Connection>();
         private readonly List<Connection> _gameClients = new List<Connection>();
@@ -50,7 +50,11 @@ namespace Proftaak_Orientatie_Game.GameStates
                 while (!_closeRequested)
                 {
                     Connection client = Connection.Listen(42069, 
-                    (connection, data) => {
+                    (connection, data) =>
+                    {
+
+                        if (data.Length == 0)
+                            return;
 
                         // Responding for a packet
                         if (Packet.GetType(data) == PACKET_TYPES.PLAYER_UPDATE)
@@ -93,43 +97,49 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public void BroadCastGame(byte[] data)
         {
-            lock (_gameClients)
-            {
-                for (int i = 0; i < _gameClients.Count; i++)
+           // new Thread(() =>
+           // {
+                lock (_gameClients)
                 {
-                    try
+                    for (int i = 0; i < _gameClients.Count; i++)
                     {
-                        _gameClients[i].Send(data);
-                    }
-                    catch (Exception)
-                    {
-                        lock (_players)
+                        try
                         {
-                            int id = _players[_gameClients[i]].id;
-                            _gameClients.RemoveAt(i--);
-                            BroadCastGame(Packet.Serialize(new PlayerDisconnectPacket(id)));
+                            _gameClients[i].Send(data);
+                        }
+                        catch (Exception)
+                        {
+                            lock (_players)
+                            {
+                                int id = _players[_gameClients[i]].id;
+                                _gameClients.RemoveAt(i--);
+                                BroadCastGame(Packet.Serialize(new PlayerDisconnectPacket(id)));
+                            }
                         }
                     }
                 }
-            }
+           // }).Start();
         }
 
         public void BroadCastLobby(byte[] data)
         {
-            lock (_lobbyClients)
-            {
-                for (int i = 0; i < _lobbyClients.Count; i++)
+           // new Thread(() =>
+            //{
+                lock (_lobbyClients)
                 {
-                    try
+                    for (int i = 0; i < _lobbyClients.Count; i++)
                     {
-                        _lobbyClients[i].Send(data);
-                    }
-                    catch (Exception)
-                    {
-                        _lobbyClients.RemoveAt(i--);
+                        try
+                        {
+                            _lobbyClients[i].Send(data);
+                        }
+                        catch (Exception)
+                        {
+                            _lobbyClients.RemoveAt(i--);
+                        }
                     }
                 }
-            }
+            //}).Start();
         }
 
         public override void OnUpdate(float deltatime, RenderWindow window)
@@ -261,7 +271,7 @@ namespace Proftaak_Orientatie_Game.GameStates
                     BroadCastLobby(Packet.Serialize(new LobbyInfoPacket(state, _lobbyClients.Count,
                         (int) Math.Round(_countdown))));
 
-                    if (state == LobbyInfoPacket.State.LOBBY_CLOSED)
+                    if (_lobbyClients.Count > 0 && state == LobbyInfoPacket.State.LOBBY_CLOSED)
                     {
                         Thread.Sleep(500);
 
@@ -295,10 +305,15 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         private void MoveToLobby(Connection connection)
         {
+            int id = -1;
+
             lock (_players)
             {
                 if (_players.ContainsKey(connection))
+                {
+                    id = _players[connection].id;
                     _players.Remove(connection);
+                }
             }
 
             lock (_gameClients)
@@ -310,6 +325,9 @@ namespace Proftaak_Orientatie_Game.GameStates
             {
                 _lobbyClients.Add(connection);
             }
+
+            if(id != -1)
+                BroadCastGame(Packet.Serialize(new PlayerDisconnectPacket(id)));
         }
     }
 }

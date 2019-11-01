@@ -32,6 +32,9 @@ namespace Proftaak_Orientatie_Game.Networking
 
         public void Process(byte[] data)
         {
+            if (data.Length == 0)
+                return;
+
             if (Packet.GetType(data) == PACKET_TYPES.PLAYER_SPAWN)
             {
                 MyId = Packet.Deserialize<PlayerSpawnPacket>(data).id;
@@ -95,7 +98,5 @@ namespace Proftaak_Orientatie_Game.Networking
 
             return packet;
         }
-
-
     }
 }

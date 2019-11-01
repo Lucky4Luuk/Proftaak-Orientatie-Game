@@ -27,7 +27,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
             if (packet.HasValue)
             {
-                Position = packet.Value.position;
+                Position = packet.Value.position * 0.1f + Position * 0.9f;
                 Velocity = packet.Value.velocity;
                 Direction = packet.Value.direction;
             }
@@ -43,7 +43,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
             if (packet.HasValue)
             {
-                Position = packet.Value.position;
+                Position = packet.Value.position * 0.1f + Position * 0.9f;
                 Velocity = packet.Value.velocity;
                 Direction = packet.Value.direction;
                 Health = packet.Value.health;

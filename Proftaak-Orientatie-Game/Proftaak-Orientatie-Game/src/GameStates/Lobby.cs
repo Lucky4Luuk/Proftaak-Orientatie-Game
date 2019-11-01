@@ -25,7 +25,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         {
             try
             {
-                _serverConnection = new Connection(IPAddress.Parse("127.0.0.1"), 42069,
+                _serverConnection = new Connection(IPAddress.Parse("145.93.140.146"), 42069,
                     (connection, data) => { OnPacket(data); });
             }
             catch (Exception err)
@@ -49,6 +49,9 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public void OnPacket(byte[] data)
         {
+            if (data.Length == 0)
+                return;
+
             PACKET_TYPES type = Packet.GetType(data);
             if (type == PACKET_TYPES.LOBBY_INFO)
             {
