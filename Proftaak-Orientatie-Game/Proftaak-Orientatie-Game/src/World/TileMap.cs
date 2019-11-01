@@ -26,6 +26,9 @@ namespace Proftaak_Orientatie_Game.World
         private Texture tilesetTexture;
         private Tileset tileset;
 
+        private RenderTexture canvas;
+        private Sprite canvasSprite;
+
         public TileMap(string filename)
         {
             LoadTilemap(filename, out background_tiles, out behind_tiles, out play_tiles, out roof_tiles, out map, out tileset);
@@ -38,6 +41,8 @@ namespace Proftaak_Orientatie_Game.World
             Console.WriteLine("Path: {0}", path);
             tilesetTexture = new Texture(path);
 
+            canvas = new RenderTexture((uint)(map.Width * 16), (uint)(map.Height * 16));
+
             sprites = new Sprite[map.Width, map.Height];
             for (int x = 0; x < map.Width; x++)
             {
@@ -48,6 +53,10 @@ namespace Proftaak_Orientatie_Game.World
                     sprites[x, y].TextureRect = new IntRect(0,0, ts.TileWidth, ts.TileHeight);
                 }
             }
+
+            RenderToCanvas();
+
+            canvasSprite = new Sprite(canvas.Texture);
         }
 
         static void LoadTilemap(string filename, out TmxLayer background_tiles, out TmxLayer behind_tiles, out TmxLayer play_tiles, out TmxLayer roof_tiles, out TmxMap map, out Tileset tileset)
@@ -75,7 +84,7 @@ namespace Proftaak_Orientatie_Game.World
                 tileset = Tileset.FromStream(stream);
         }
 
-        public override void OnDraw(float deltatime, RenderWindow window)
+        private void RenderToCanvas()
         {
             for (int y = 0, i = 0; y < map.Height; y++)
             {
@@ -104,7 +113,7 @@ namespace Proftaak_Orientatie_Game.World
                         sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
                         sprites[x, y].Rotation = rotation;
                         sprites[x, y].Scale = scale;
-                        window.Draw(sprites[x, y]);
+                        canvas.Draw(sprites[x, y]);
                     }
 
 
@@ -131,7 +140,7 @@ namespace Proftaak_Orientatie_Game.World
                         sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
                         sprites[x, y].Rotation = rotation;
                         //sprites[x, y].Scale = scale;
-                        window.Draw(sprites[x, y]);
+                        canvas.Draw(sprites[x, y]);
                     }
 
 
@@ -158,7 +167,7 @@ namespace Proftaak_Orientatie_Game.World
                         sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
                         sprites[x, y].Rotation = rotation;
                         sprites[x, y].Scale = scale;
-                        window.Draw(sprites[x, y]);
+                        canvas.Draw(sprites[x, y]);
                     }
 
 
@@ -185,10 +194,17 @@ namespace Proftaak_Orientatie_Game.World
                         sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
                         sprites[x, y].Rotation = rotation;
                         sprites[x, y].Scale = scale;
-                        window.Draw(sprites[x, y]);
+                        canvas.Draw(sprites[x, y]);
                     }
                 }
             }
+
+            canvas.Display();
+        }
+
+        public override void OnDraw(float deltatime, RenderWindow window)
+        {
+            window.Draw(canvasSprite);
         }
     }
 }
