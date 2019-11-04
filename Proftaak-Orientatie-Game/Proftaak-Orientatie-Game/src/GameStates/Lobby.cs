@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Proftaak_Orientatie_Game.GameStates;
 using Proftaak_Orientatie_Game.Networking;
 using Proftaak_Orientatie_Game.UI;
 using SFML.Graphics;
@@ -25,7 +20,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         {
             try
             {
-                _serverConnection = new Connection(IPAddress.Parse("127.0.0.1"), 42069,
+                _serverConnection = new Connection(IPAddress.Parse("145.93.104.142"), 42069,
                     (connection, data) => { OnPacket(data); });
             }
             catch (Exception err)
