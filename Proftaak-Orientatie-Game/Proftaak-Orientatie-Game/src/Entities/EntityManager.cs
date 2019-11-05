@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Proftaak_Orientatie_Game.Entities.Bullet;
 using Proftaak_Orientatie_Game.Networking;
@@ -81,7 +82,10 @@ namespace Proftaak_Orientatie_Game.Entities
                 e.OnFixedUpdate(fixedDeltaTime, this, buffer, window);
 
             if (CheckCollision(ActivePlayer.getPosition()))
+            {
+                //Console.WriteLine("Set position");
                 ActivePlayer.setPosition(prevPos);
+            }
 
             DeleteMarkedEntities();
         }
@@ -118,7 +122,8 @@ namespace Proftaak_Orientatie_Game.Entities
         {
             //Checks collision with tilemap
             Vector2i posI = new Vector2i((int)pos.X, (int)pos.Y);
-            return _tilemap.GetTile(posI) > 1;
+            int GID = _tilemap.GetTile(posI);
+            return GID > 1 && GID != 69;
         }
     }
 }

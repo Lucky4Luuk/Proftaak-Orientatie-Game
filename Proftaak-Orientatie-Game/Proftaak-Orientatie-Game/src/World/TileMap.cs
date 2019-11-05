@@ -30,7 +30,7 @@ namespace Proftaak_Orientatie_Game.World
         private RenderTexture objectCanvas;
         private Sprite canvasSprite;
 
-        private Shader shadowShader;
+        //private Shader shadowShader;
 
         public TileMap(string filename)
         {
@@ -47,11 +47,11 @@ namespace Proftaak_Orientatie_Game.World
             canvas = new RenderTexture((uint)(map.Width * 16), (uint)(map.Height * 16));
             objectCanvas = new RenderTexture((uint)(map.Width * 16), (uint)(map.Height * 16));
 
-            StreamReader reader = new StreamReader("res/shadow_shader.glsl");
-            String src = reader.ReadToEnd();
-            Console.WriteLine(src);
-            shadowShader = Shader.FromString(null, null, src);
-            reader.Close();
+            //StreamReader reader = new StreamReader("res/shadow_shader.glsl");
+            //String src = reader.ReadToEnd();
+            //Console.WriteLine(src);
+            //shadowShader = Shader.FromString(null, null, src);
+            //reader.Close();
 
             sprites = new Sprite[map.Width, map.Height];
             for (int x = 0; x < map.Width; x++)
@@ -224,20 +224,24 @@ namespace Proftaak_Orientatie_Game.World
 
         public void OnDraw(float deltatime, RenderWindow window, Vector2f playerPos)
         {
-            shadowShader.SetUniform("texture", Shader.CurrentTexture);
-            shadowShader.SetUniform("shadowLayer", objectCanvas.Texture);
-            shadowShader.SetUniform("playerCoords", playerPos);
-            shadowShader.SetUniform("layerSize", new Vector2f(map.Width * map.TileWidth, map.Height * map.TileHeight));
-            Shader.Bind(shadowShader);
+            //shadowShader.SetUniform("texture", Shader.CurrentTexture);
+            //shadowShader.SetUniform("shadowLayer", objectCanvas.Texture);
+            //shadowShader.SetUniform("playerCoords", playerPos);
+            //shadowShader.SetUniform("layerSize", new Vector2f(map.Width * map.TileWidth, map.Height * map.TileHeight));
+            //Shader.Bind(shadowShader);
             window.Draw(canvasSprite);
-            Shader.Bind(null);
+            //Shader.Bind(null);
         }
 
         public int GetTile(Vector2i pos)
         {
             if (pos.X < 0 || pos.Y < 0 || pos.X / map.TileWidth >= map.Width || pos.Y / map.TileHeight >= map.Height)
+            {
+                Console.WriteLine("NOOOOOOOOOOO");
                 return 0;
+            }
             int i = (pos.X / map.TileWidth) + (pos.Y / map.TileHeight) * map.Height;
+            Console.WriteLine($"Tile Gid: {play_tiles.Tiles[i].Gid}");
             return play_tiles.Tiles[i].Gid;
         }
     }

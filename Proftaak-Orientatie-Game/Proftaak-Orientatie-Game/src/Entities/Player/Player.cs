@@ -152,7 +152,8 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
         public void setPosition(Vector2f newPos)
         {
-            _playerController.Position = newPos;
+            _sprite.Position = newPos;
+            //_playerController.Position = newPos;
         }
 
         public int GetId()
