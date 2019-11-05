@@ -64,6 +64,7 @@ namespace Proftaak_Orientatie_Game.GameStates
 
 
                 _inputManager = new GamepadInputManager();
+                _inputManager.sendData(1);
                 controller = new GamepadController(_inputManager, _entityManager);
             }
             catch (Exception e)
@@ -86,7 +87,6 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public override void OnCreate()
         {
-
             _connectionBuffer = new ConnectionBuffer(_serverConnection);
 
             font = new Font("res/fonts/defaultFont.ttf");
@@ -152,6 +152,8 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public override void OnDestroy()
         {
+            _inputManager?.sendData(0);
+
             _inputManager?.Close();
             _serverConnection.Close();
         }

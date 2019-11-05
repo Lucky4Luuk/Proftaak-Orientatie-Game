@@ -18,6 +18,11 @@ namespace Proftaak_Orientatie_Game.Entities.Player
         public Vector2f StickLeft { get; private set; }
         public Vector2f StickRight { get; private set; }
 
+        public void sendData(byte data)
+        {
+            _port.Write(new[] { data }, 0, 1);
+        }
+
         public GamepadInputManager()
         {
             Debug.Assert(IsGamepadConnected());
