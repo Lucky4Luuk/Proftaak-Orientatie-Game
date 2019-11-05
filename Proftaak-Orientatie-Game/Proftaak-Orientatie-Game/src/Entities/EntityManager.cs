@@ -2,7 +2,9 @@
 using System.Linq;
 using Proftaak_Orientatie_Game.Entities.Bullet;
 using Proftaak_Orientatie_Game.Networking;
+using Proftaak_Orientatie_Game.World;
 using SFML.Graphics;
+using SFML.System;
 
 namespace Proftaak_Orientatie_Game.Entities
 {
@@ -12,6 +14,8 @@ namespace Proftaak_Orientatie_Game.Entities
         private readonly Queue<IEntity> _buffer =new Queue<IEntity>();
 
         public Player.Player ActivePlayer { get; set; }
+
+        public TileMap _tilemap;
 
         public void ShootBullet(bool myBullet, int origin, Bullet.Bullet bullet, float range)
         {
@@ -67,12 +71,17 @@ namespace Proftaak_Orientatie_Game.Entities
 
         public void FixedUpdate(float fixedDeltaTime, ConnectionBuffer buffer, RenderWindow window)
         {
+            Vector2f prevPos = ActivePlayer.getPosition();
+
             lock (_buffer)
                 while (_buffer.Count != 0)
                     _entities.Add(_buffer.Dequeue());
 
             foreach (IEntity e in _entities)
                 e.OnFixedUpdate(fixedDeltaTime, this, buffer, window);
+
+            if (CheckCollision(ActivePlayer.getPosition()))
+                ActivePlayer.setPosition(prevPos);
 
             DeleteMarkedEntities();
         }
@@ -103,6 +112,13 @@ namespace Proftaak_Orientatie_Game.Entities
                     --i;
                 }
             }
+        }
+
+        private bool CheckCollision(Vector2f pos)
+        {
+            //Checks collision with tilemap
+            Vector2i posI = new Vector2i((int)pos.X, (int)pos.Y);
+            return _tilemap.GetTile(posI) > 1;
         }
     }
 }

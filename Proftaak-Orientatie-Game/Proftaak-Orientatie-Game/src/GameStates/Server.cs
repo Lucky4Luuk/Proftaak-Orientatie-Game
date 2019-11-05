@@ -30,7 +30,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         private float _gameTime;
 
         private const int PLAYERS_REQUIRED_FOR_GAME = 2;
-        private const int COUNTDOWN_AFTER_ENOUGH_PLAYERS = 20;
+        private const int COUNTDOWN_AFTER_ENOUGH_PLAYERS = 3;
 
         private readonly List<Connection> _lobbyClients = new List<Connection>();
         private readonly List<Connection> _gameClients = new List<Connection>();

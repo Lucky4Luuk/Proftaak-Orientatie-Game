@@ -22,7 +22,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         private ConnectionBuffer _connectionBuffer;
 
         private EntityManager _entityManager = new EntityManager();
-        private Level _curLevel;
+        private TileMap _curLevel;
 
         private Connection _serverConnection;
 
@@ -63,6 +63,8 @@ namespace Proftaak_Orientatie_Game.GameStates
 
             font = new Font("res/fonts/defaultFont.ttf");
             _curLevel = new TileMap("res/maps/test.tmx");
+
+            _entityManager._tilemap = (TileMap)_curLevel;
         }
 
         public override void OnUpdate(float deltatime, RenderWindow window)
@@ -83,7 +85,7 @@ namespace Proftaak_Orientatie_Game.GameStates
             //camera.viewport.Center = player.getPosition();
             camera.SetTargetPosition(player.getPosition());
             window.SetView(camera.viewport);
-            _curLevel.OnDraw(deltatime, window);
+            _curLevel.OnDraw(deltatime, window, player.getPosition());
             _entityManager.Draw(deltatime, window);
 
             //Console.Write("FPS: " + 1.0f / deltatime + "                             \r");
@@ -100,7 +102,12 @@ namespace Proftaak_Orientatie_Game.GameStates
             {
                 _entityManager.OnTick(_connectionBuffer);
 
-                _connectionBuffer.Send();
+                try {
+                    _connectionBuffer.Send();
+                } catch (Exception ex) {
+                    RequestNewState(new Menu());
+                    _serverConnection.Close();
+                }
             }
         }
 

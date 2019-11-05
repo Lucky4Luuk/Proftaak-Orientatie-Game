@@ -78,7 +78,7 @@ namespace Proftaak_Orientatie_Game.Networking
 
         public void Send(byte[] data)
         {
-            _socket.Send(new [] {(byte) data.Length}, 0, 1, 0);
+            _socket.Send(new[] { (byte)data.Length }, 0, 1, 0);
             _socket.Send(data, 0, data.Length, 0);
         }
 
@@ -116,7 +116,13 @@ namespace Proftaak_Orientatie_Game.Networking
                 state.data = new byte[1];
                 state.searching = true;
 
-                state.socket.BeginReceive(state.data, 0, 1, 0, AsyncReceiveCallback, state);
+                try
+                {
+                    state.socket.BeginReceive(state.data, 0, 1, 0, AsyncReceiveCallback, state);
+                } catch (Exception)
+                {
+                    Console.WriteLine("Player disconnected for mysterious reasons!");
+                }
             }
         }
     }

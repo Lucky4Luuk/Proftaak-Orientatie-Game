@@ -25,7 +25,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         {
             try
             {
-                _serverConnection = new Connection(IPAddress.Parse("127.0.0.1"), 42069,
+                _serverConnection = new Connection(IPAddress.Parse("145.93.104.199"), 42069, //145.93.140.111
                     (connection, data) => { OnPacket(data); });
             }
             catch (Exception err)
@@ -58,19 +58,19 @@ namespace Proftaak_Orientatie_Game.GameStates
                 LobbyInfoPacket packet = Packet.Deserialize<LobbyInfoPacket>(data);
                 if(packet.state == LobbyInfoPacket.State.LOBBY_CLOSED)
                     RequestNewState(new Game(_serverConnection));
-                
+
 
                 if(packet.state == LobbyInfoPacket.State.STARTING)
                     _statusText.DisplayedString = "Game is starting in " + packet.countdown + " seconds!";
-                
+
 
                 if (packet.state == LobbyInfoPacket.State.GAME_IN_PROGRESS)
                     _statusText.DisplayedString = "Game is currently in progress, please wait.";
-                
+
 
                 if (packet.state == LobbyInfoPacket.State.WAITING_FOR_PLAYERS)
                     _statusText.DisplayedString = "Waiting for players...";
-                
+
                 _playerCountText.DisplayedString = "Players in lobby: " + packet.playerCount;
             }
         }
