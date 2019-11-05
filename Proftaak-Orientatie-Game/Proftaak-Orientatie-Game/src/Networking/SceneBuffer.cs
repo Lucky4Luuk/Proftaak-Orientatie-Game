@@ -13,7 +13,7 @@ namespace Proftaak_Orientatie_Game.Networking
 {
     class SceneBuffer
     {
-        private readonly Texture _playerTexture;
+        private readonly Texture[] _playerTexture;
         private readonly Texture _healthBarTexture;
         private readonly EntityManager _entityManager;
 
@@ -23,7 +23,7 @@ namespace Proftaak_Orientatie_Game.Networking
 
         private readonly Dictionary<int, PlayerUpdatePacket> _players = new Dictionary<int, PlayerUpdatePacket>();
 
-        public SceneBuffer(Texture playerTexture, Texture healthBarTexture, EntityManager manager)
+        public SceneBuffer(Texture[] playerTexture, Texture healthBarTexture, EntityManager manager)
         {
             _playerTexture = playerTexture;
             _healthBarTexture = healthBarTexture;
@@ -37,7 +37,9 @@ namespace Proftaak_Orientatie_Game.Networking
 
             if (Packet.GetType(data) == PACKET_TYPES.PLAYER_SPAWN)
             {
-                MyId = Packet.Deserialize<PlayerSpawnPacket>(data).id;
+                PlayerSpawnPacket packet = Packet.Deserialize<PlayerSpawnPacket>(data);
+                MyId = packet.id;
+                _entityManager.ActivePlayer.SetId(MyId);
             }
 
             if (Packet.GetType(data) == PACKET_TYPES.PLAYER_UPDATE)
@@ -55,8 +57,15 @@ namespace Proftaak_Orientatie_Game.Networking
                         _players.Add(packet.id, packet);
 
 
-                        if(packet.id != MyId)
-                            _entityManager.Add(new Player(packet.position, new NetworkController(this, packet.id), _playerTexture, _healthBarTexture, _entityManager, new World.Camera()));
+                        if (packet.id != MyId)
+                        {
+                            Player player = new Player(packet.position, new NetworkController(this, packet.id),
+                                _playerTexture, _healthBarTexture, _entityManager, new World.Camera());
+
+                            player.SetId(packet.id);
+
+                            _entityManager.Add(player);
+                        }
                     }
                 }
             }

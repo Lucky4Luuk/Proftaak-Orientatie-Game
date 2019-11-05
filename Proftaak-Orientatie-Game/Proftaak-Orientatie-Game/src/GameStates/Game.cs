@@ -30,7 +30,13 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         private Connection _serverConnection;
 
-        private Texture playerTexture = new Texture("res/textures/player.png");
+        private Texture[] playerTexture = new Texture[]
+        {
+            new Texture("res/textures/Character1.png"),
+            new Texture("res/textures/Character2.png"),
+            new Texture("res/textures/Character3.png"),
+            new Texture("res/textures/Character4.png"),
+        };
         private Texture healthBarTexture = new Texture("res/textures/healthbar.png");
 
 
@@ -102,14 +108,14 @@ namespace Proftaak_Orientatie_Game.GameStates
         public override void OnDraw(float deltatime, RenderWindow window)
         {
             Player player = _entityManager.ActivePlayer;
-            camera.viewport.Size = (Vector2f)window.Size / 3.0f;
-            //camera.viewport.Center = player.getPosition();
+
+            float scale = Math.Max(1.0f, (float) Math.Ceiling(window.Size.Y / 360.0f));
+
+            camera.viewport.Size = (Vector2f)window.Size / scale;
             camera.SetTargetPosition(player.getPosition());
             window.SetView(camera.viewport);
             _curLevel.OnDraw(deltatime, window, player.getPosition());
             _entityManager.Draw(deltatime, window);
-
-            //Console.Write("FPS: " + 1.0f / deltatime + "                             \r");
         }
 
         public override void OnTick()
