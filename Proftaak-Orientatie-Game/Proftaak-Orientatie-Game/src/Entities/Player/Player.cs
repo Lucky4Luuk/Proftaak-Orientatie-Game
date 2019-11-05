@@ -55,7 +55,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             _sprite = new Sprite {
                 Position = spawnPositon,
                 TextureRect = _animations[(int)Direction.DOWN].GetShape(),
-                Origin = new Vector2f(_animations[0].GetShape().Width * 0.5f, _animations[0].GetShape().Height * 0.5f)
+                Origin = new Vector2f(_animations[0].GetShape().Width, _animations[0].GetShape().Height)
             };
             _currentDirection = Direction.DOWN;
 

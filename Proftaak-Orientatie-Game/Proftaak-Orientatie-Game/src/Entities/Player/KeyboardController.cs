@@ -18,6 +18,12 @@ namespace Proftaak_Orientatie_Game.Entities.Player
         private float _shootCooldown;
         private bool _isShootPressed;
 
+        private EntityManager _manager;
+        public KeyboardController(EntityManager manager)
+        {
+            _manager = manager;
+        }
+
         public override void FixedUpdate(RenderWindow window, float deltatime)
         {
             if (window.HasFocus())
@@ -46,7 +52,28 @@ namespace Proftaak_Orientatie_Game.Entities.Player
                 dy *= speed * deltatime;
 
                 // Start moving
-                Position = new Vector2f(Position.X + dx, Position.Y + dy);
+                Position = new Vector2f(Position.X + dx, Position.Y);
+
+                bool collision = false;
+                for (int x = -1; x <= 1; x += 2)
+                    for (int y = -1; y <= 1; y += 2)
+                        if (_manager.CheckCollision(new Vector2f(Position.X + x * 2, Position.Y + y * 2)))
+                            collision = true;
+
+                if(collision)
+                    Position = new Vector2f(Position.X - dx, Position.Y);
+
+                Position = new Vector2f(Position.X, Position.Y + dy);
+
+                collision = false;
+                for (int x = -1; x <= 1; x += 2)
+                    for (int y = -1; y <= 1; y += 2)
+                        if (_manager.CheckCollision(new Vector2f(Position.X + x * 2, Position.Y + y * 2)))
+                            collision = true;
+
+                if (collision)
+                    Position = new Vector2f(Position.X, Position.Y - dy);
+
                 Velocity = new Vector2f(dx, dy);
             }
         }
