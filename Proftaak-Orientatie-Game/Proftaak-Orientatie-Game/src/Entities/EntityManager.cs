@@ -82,12 +82,6 @@ namespace Proftaak_Orientatie_Game.Entities
             foreach (IEntity e in _entities)
                 e.OnFixedUpdate(fixedDeltaTime, this, buffer, window);
 
-            if (CheckCollision(ActivePlayer.getPosition()))
-            {
-                //Console.WriteLine("Set position");
-                ActivePlayer.setPosition(prevPos);
-            }
-
             DeleteMarkedEntities();
         }
 
@@ -119,7 +113,7 @@ namespace Proftaak_Orientatie_Game.Entities
             }
         }
 
-        private bool CheckCollision(Vector2f pos)
+        public bool CheckCollision(Vector2f pos)
         {
             //Checks collision with tilemap
             Vector2i posI = new Vector2i((int)pos.X, (int)pos.Y);

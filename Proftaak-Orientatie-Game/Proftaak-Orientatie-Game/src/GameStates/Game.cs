@@ -67,7 +67,7 @@ namespace Proftaak_Orientatie_Game.GameStates
             }
             catch (Exception e)
             {
-                controller = new KeyboardController();
+                controller = new KeyboardController(_entityManager);
             }
 
             Player player = new Player(new Vector2f(300.0f, 300.0f), controller, playerTexture,
