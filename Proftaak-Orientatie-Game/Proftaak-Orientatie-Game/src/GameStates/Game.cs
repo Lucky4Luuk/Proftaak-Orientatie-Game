@@ -16,6 +16,7 @@ using Proftaak_Orientatie_Game.UI;
 using Proftaak_Orientatie_Game.World;
 using SFML.Graphics;
 using SFML.System;
+using SFML.Window;
 
 namespace Proftaak_Orientatie_Game.GameStates
 {
@@ -94,10 +95,21 @@ namespace Proftaak_Orientatie_Game.GameStates
             _entityManager._tilemap = (TileMap)_curLevel;
         }
 
+        private bool lastFrame = false;
+
         public override void OnUpdate(float deltatime, RenderWindow window)
         {
             _entityManager.Update(deltatime, _connectionBuffer, window);
             camera.Update(deltatime);
+
+            bool b = Keyboard.IsKeyPressed(Keyboard.Key.Space);
+            if (!b && lastFrame)
+            {
+                Console.WriteLine("new Vector2f(" + _entityManager.ActivePlayer.getPosition().X + ", " + _entityManager.ActivePlayer.getPosition().Y + "),");
+            }
+
+            lastFrame = b;
+
         }
 
         public override void OnFixedUpdate(float fixedDeltaTime, RenderWindow window)

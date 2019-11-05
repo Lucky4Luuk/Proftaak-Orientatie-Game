@@ -281,7 +281,7 @@ namespace Proftaak_Orientatie_Game.GameStates
                         {
                             int playerId = ++_nextId;
 
-                            client.Send(Packet.Serialize(new PlayerSpawnPacket(playerId, new Vector2f(500.0f, 500.0f))));
+                            client.Send(Packet.Serialize(new PlayerSpawnPacket(playerId, new Vector2f(300.0f, 300.0f))));
                             _gameClients.Add(client);
                             _players.Add(client, new PlayerUpdatePacket(
                                 playerId, Player.MAX_HEALTH, new Vector2f(0.0f, 0.0f), new Vector2f(0.0f, 0.0f), new Vector2f(0.0f, 0.0f)
