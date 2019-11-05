@@ -47,7 +47,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
                 int header = data[0] >> 5;
                 int value = data[0] & 0x1F;
 
-                //Console.WriteLine(header + "\t" + value);
+                ////Console.WriteLine(header + "\t" + value);
 
                 switch (header)
                 {

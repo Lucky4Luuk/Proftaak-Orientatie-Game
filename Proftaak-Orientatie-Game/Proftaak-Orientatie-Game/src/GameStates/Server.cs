@@ -40,6 +40,16 @@ namespace Proftaak_Orientatie_Game.GameStates
         private readonly Queue<IPacket> _actions = new Queue<IPacket>();
         private bool _closeRequested;
 
+        private Vector2f[] _spawnpoints = {
+            new Vector2f(316.4665f, 290.3999f),
+            new Vector2f(484.2668f, 145.9335f),
+            new Vector2f(767.8028f, 369.3341f),
+            new Vector2f(1102.604f, 440.8014f),
+            new Vector2f(1069.338f, 791.3385f),
+            new Vector2f(673.0693f, 973.5405f),
+            new Vector2f(312.0002f, 587.1363f)
+        };
+
         public override void OnCreate()
         {
             font = new Font("res/fonts/defaultFont.ttf");
@@ -281,7 +291,7 @@ namespace Proftaak_Orientatie_Game.GameStates
                         {
                             int playerId = ++_nextId;
 
-                            client.Send(Packet.Serialize(new PlayerSpawnPacket(playerId, new Vector2f(300.0f, 300.0f))));
+                            client.Send(Packet.Serialize(new PlayerSpawnPacket(playerId, _spawnpoints[playerId % _spawnpoints.Length])));
                             _gameClients.Add(client);
                             _players.Add(client, new PlayerUpdatePacket(
                                 playerId, Player.MAX_HEALTH, new Vector2f(0.0f, 0.0f), new Vector2f(0.0f, 0.0f), new Vector2f(0.0f, 0.0f)

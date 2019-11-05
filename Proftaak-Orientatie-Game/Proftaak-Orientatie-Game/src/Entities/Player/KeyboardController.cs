@@ -88,7 +88,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
                 Direction = mousePos / (float) Math.Sqrt(mousePos.X * mousePos.X + mousePos.Y * mousePos.Y);
 
-                bool shoot = Keyboard.IsKeyPressed(Keyboard.Key.Space);
+                bool shoot = Mouse.IsButtonPressed(Mouse.Button.Left);
 
 
                 _shootCooldown -= deltatime;

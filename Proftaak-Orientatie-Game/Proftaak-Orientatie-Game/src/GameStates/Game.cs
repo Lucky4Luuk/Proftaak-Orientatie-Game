@@ -105,7 +105,7 @@ namespace Proftaak_Orientatie_Game.GameStates
             bool b = Keyboard.IsKeyPressed(Keyboard.Key.Space);
             if (!b && lastFrame)
             {
-                Console.WriteLine("new Vector2f(" + _entityManager.ActivePlayer.getPosition().X + ", " + _entityManager.ActivePlayer.getPosition().Y + "),");
+                //Console.WriteLine("new Vector2f(" + _entityManager.ActivePlayer.getPosition().X + ", " + _entityManager.ActivePlayer.getPosition().Y + "),");
             }
 
             lastFrame = b;
