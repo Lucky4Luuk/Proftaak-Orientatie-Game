@@ -47,12 +47,22 @@ namespace Proftaak_Orientatie_Game.GameStates
         {
             _serverConnection = serverConnection;
 
-            if (GamepadInputManager.IsGamepadConnected())
-                _inputManager= new GamepadInputManager();
+            IPlayerController controller;
 
-            var controller = GamepadInputManager.IsGamepadConnected()
-                ? (IPlayerController)new GamepadController(_inputManager)
-                : new KeyboardController();
+            try
+            {
+                var port = new SerialPort(SerialPort.GetPortNames()[0], 115200, Parity.None);
+                port.Open();
+                port.Close();
+
+
+                _inputManager = new GamepadInputManager();
+                controller = new GamepadController(_inputManager);
+            }
+            catch (Exception e)
+            {
+                controller = new KeyboardController();
+            }
 
             Player player = new Player(new Vector2f(300.0f, 300.0f), controller, playerTexture,
                 healthBarTexture, _entityManager, camera)
