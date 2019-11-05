@@ -20,6 +20,8 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         public override void OnCreate()
         {
+            GamepadInputManager manager = new GamepadInputManager();
+
             Font font = new Font("res/fonts/defaultFont.ttf");
             _playButton = new Button(new Vector2f(0.0f, 0.0f), new Vector2f(500.0f, 50.0f),
                 new Color(0,0,0, 100), new Color(50, 50, 50, 100), new Color(100, 100, 100, 100),

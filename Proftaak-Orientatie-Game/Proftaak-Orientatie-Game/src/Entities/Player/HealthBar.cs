@@ -46,7 +46,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
 
         public override void OnDraw(float deltatime, RenderWindow window)
         {
-            _bar.TextureRect = new IntRect(0, 8, (int)(16 * _target.Health / Player.MAX_HEALTH), 8);
+            _bar.TextureRect = new IntRect(0, 8, (int)(2 + 12 * _target.Health / Player.MAX_HEALTH), 8);
             _bar.Position = _target.getPosition() + OFFSET;
             _background.Position = _target.getPosition() + OFFSET;
 

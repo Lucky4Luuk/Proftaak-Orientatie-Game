@@ -63,7 +63,7 @@ namespace Proftaak_Orientatie_Game.GameStates
 
 
                 _inputManager = new GamepadInputManager();
-                controller = new GamepadController(_inputManager);
+                controller = new GamepadController(_inputManager, _entityManager);
             }
             catch (Exception e)
             {
