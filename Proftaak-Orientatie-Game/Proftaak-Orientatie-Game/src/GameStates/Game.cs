@@ -121,7 +121,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         {
             Player player = _entityManager.ActivePlayer;
 
-            float scale = Math.Max(1.0f, (float) Math.Ceiling(window.Size.Y / 360.0f));
+            float scale = Math.Max(1.0f, (float) Math.Ceiling(window.Size.Y / 280.0f));
 
             camera.viewport.Size = (Vector2f)window.Size / scale;
             camera.SetTargetPosition(player.getPosition());
