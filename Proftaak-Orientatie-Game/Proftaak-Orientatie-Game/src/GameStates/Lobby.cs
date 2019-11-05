@@ -20,7 +20,7 @@ namespace Proftaak_Orientatie_Game.GameStates
         {
             try
             {
-                _serverConnection = new Connection(IPAddress.Parse("145.93.104.142"), 42069,
+                _serverConnection = new Connection(IPAddress.Parse("145.93.104.199"), 42069,
                     (connection, data) => { OnPacket(data); });
             }
             catch (Exception err)
