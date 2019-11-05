@@ -178,6 +178,11 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             return new Vector2f(_sprite.GetLocalBounds().Width, _sprite.GetLocalBounds().Height);
         }
 
+        public void setPosition(Vector2f newPos)
+        {
+            _playerController.Position = newPos;
+        }
+
         public int GetId()
         {
             return ((NetworkController) _playerController).Id;
