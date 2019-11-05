@@ -68,6 +68,8 @@
     <Compile Include="src\Entities\Bullet\BulletTrail.cs" />
     <Compile Include="src\Entities\Bullet\Line.cs" />
     <Compile Include="src\Entities\EntityManager.cs" />
+    <Compile Include="src\Entities\Player\GamepadController.cs" />
+    <Compile Include="src\Entities\Player\GamepadInputManager.cs" />
     <Compile Include="src\Entities\Player\HealthBar.cs" />
     <Compile Include="src\Entities\IEntity.cs" />
     <Compile Include="src\Entities\Player\IPlayerController.cs" />

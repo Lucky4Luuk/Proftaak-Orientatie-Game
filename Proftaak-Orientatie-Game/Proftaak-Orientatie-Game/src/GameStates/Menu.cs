@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Proftaak_Orientatie_Game.Entities.Player;
 using Proftaak_Orientatie_Game.GameStates;
 using Proftaak_Orientatie_Game.Networking;
 using Proftaak_Orientatie_Game.UI;

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO.Ports;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using Proftaak_Orientatie_Game.Entities;
@@ -24,6 +26,8 @@ namespace Proftaak_Orientatie_Game.GameStates
         private EntityManager _entityManager = new EntityManager();
         private TileMap _curLevel;
 
+        private GamepadInputManager _inputManager = null;
+
         private Connection _serverConnection;
 
         private Texture playerTexture = new Texture("res/textures/player.png");
@@ -43,7 +47,24 @@ namespace Proftaak_Orientatie_Game.GameStates
         {
             _serverConnection = serverConnection;
 
-            Player player = new Player(new Vector2f(300.0f, 300.0f), new KeyboardController(), playerTexture,
+            IPlayerController controller;
+
+            try
+            {
+                var port = new SerialPort(SerialPort.GetPortNames()[0], 115200, Parity.None);
+                port.Open();
+                port.Close();
+
+
+                _inputManager = new GamepadInputManager();
+                controller = new GamepadController(_inputManager);
+            }
+            catch (Exception e)
+            {
+                controller = new KeyboardController();
+            }
+
+            Player player = new Player(new Vector2f(300.0f, 300.0f), controller, playerTexture,
                 healthBarTexture, _entityManager, camera)
             {
                 Active = true
@@ -95,7 +116,6 @@ namespace Proftaak_Orientatie_Game.GameStates
         {
             if (_sceneBuffer.ReturnToLobby)
             {
-                _serverConnection.Close();
                 RequestNewState(new Lobby());
             }
             else
@@ -112,6 +132,9 @@ namespace Proftaak_Orientatie_Game.GameStates
         }
 
         public override void OnDestroy()
-        {}
+        {
+            _inputManager?.Close();
+            _serverConnection.Close();
+        }
     }
 }

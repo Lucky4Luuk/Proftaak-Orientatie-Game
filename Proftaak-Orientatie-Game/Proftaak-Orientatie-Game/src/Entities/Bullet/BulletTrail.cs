@@ -37,6 +37,7 @@ namespace Proftaak_Orientatie_Game.Entities.Bullet
         public override void OnDraw(float deltatime, RenderWindow window)
         {
             _trail.Color = new Color(255, 255, 255, (byte)((_time / TOTAL_TIME) * 255));
+            _trail.Thickness = 2.0f + (1.0f - _time / TOTAL_TIME) * (1.0f - _time / TOTAL_TIME) * 8.0f;
             _trail.Draw(window);
         }
 

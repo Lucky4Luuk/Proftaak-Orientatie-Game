@@ -105,6 +105,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             {
                 entityManager.ShootBullet(true, -1,
                     new Bullet.Bullet(_playerController.ShotOrigin.Value, _playerController.ShotDirection), 800.0f);
+
                 buffer.Add(new PlayerShootPacket(-1, _playerController.ShotOrigin.Value, _playerController.ShotDirection));
             }
 
