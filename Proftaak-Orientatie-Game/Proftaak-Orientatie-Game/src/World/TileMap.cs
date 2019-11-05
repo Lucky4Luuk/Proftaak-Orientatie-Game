@@ -272,6 +272,11 @@ namespace Proftaak_Orientatie_Game.World
             return play_tiles.Tiles[i].Gid;
         }
 
+        public Vector2i GetTileSize()
+        {
+            return new Vector2i(map.TileWidth, map.TileHeight);
+        }
+
         public int GetRoofTile(Vector2f posF)
         {
             Vector2i pos = new Vector2i((int)(posF.X + (float)map.TileWidth / 2f), (int)(posF.Y + (float)map.TileHeight / 2f));
