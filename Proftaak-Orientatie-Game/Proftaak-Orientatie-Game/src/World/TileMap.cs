@@ -44,7 +44,7 @@ namespace Proftaak_Orientatie_Game.World
             String path = ts.Image.Source;//.Replace("..", "res").Replace("res/maps", "");
             //String path = ts.ImagePath.Replace("..", "res");
             //String path = map.Tilesets[0].Image.Source.Replace("..", "res");
-            Console.WriteLine("Path: {0}", path);
+            //Console.WriteLine("Path: {0}", path);
             tilesetTexture = new Texture(path);
 
             canvas = new RenderTexture((uint)(map.Width * 16), (uint)(map.Height * 16));
@@ -53,8 +53,8 @@ namespace Proftaak_Orientatie_Game.World
 
             StreamReader reader = new StreamReader("res/shadow_shader.glsl");
             String src = reader.ReadToEnd();
-            Console.WriteLine("=== SRC ===");
-            Console.WriteLine(src);
+            //Console.WriteLine("=== SRC ===");
+            //Console.WriteLine(src);
             shadowShader = Shader.FromString(null, null, src);
             reader.Close();
 
@@ -87,7 +87,7 @@ namespace Proftaak_Orientatie_Game.World
 
             using (var stream = File.OpenRead("res/tilesets/tileseta.tsx"))
                 tileset = Tileset.FromStream(stream);
-            Console.WriteLine($"{tileset.Name}");
+            //Console.WriteLine($"{tileset.Name}");
         }
 
         private void RenderToCanvas()
@@ -129,7 +129,7 @@ namespace Proftaak_Orientatie_Game.World
                             canvas.Draw(sprites[x, y]);
                         } catch (Exception)
                         {
-                            Console.WriteLine($"Position: [{x}; {y}] - {tsTile.Gid - 1}");
+                            //Console.WriteLine($"Position: [{x}; {y}] - {tsTile.Gid - 1}");
                         }
                     }
 
@@ -167,7 +167,7 @@ namespace Proftaak_Orientatie_Game.World
                             canvas.Draw(sprites[x, y]);
                         } catch (Exception)
                         {
-                            Console.WriteLine($"Position: [{x}; {y}] - {tsTile.Gid - 1}");
+                            //Console.WriteLine($"Position: [{x}; {y}] - {tsTile.Gid - 1}");
                         }
                     }
 
@@ -206,7 +206,7 @@ namespace Proftaak_Orientatie_Game.World
                             objectCanvas.Draw(sprites[x, y]);
                         } catch (Exception)
                         {
-                            Console.WriteLine($"Position: [{x}; {y}] - {tsTile.Gid - 1}");
+                            //Console.WriteLine($"Position: [{x}; {y}] - {tsTile.Gid - 1}");
                         }
                     }
 
@@ -244,7 +244,7 @@ namespace Proftaak_Orientatie_Game.World
                             roofCanvas.Draw(sprites[x, y]);
                         } catch (Exception)
                         {
-                            Console.WriteLine($"Position: [{x}; {y}] - {tsTile.Gid - 1}");
+                            //Console.WriteLine($"Position: [{x}; {y}] - {tsTile.Gid - 1}");
                         }
                     }
                 }
@@ -274,7 +274,7 @@ namespace Proftaak_Orientatie_Game.World
             if (pos.X < 0 || pos.Y < 0 || pos.X / map.TileWidth >= map.Width || pos.Y / map.TileHeight >= map.Height)
                 return 0;
             int i = (pos.X / map.TileWidth) + (pos.Y / map.TileHeight) * map.Height;
-            //Console.WriteLine($"Tile Gid: {play_tiles.Tiles[i].Gid}");
+            ////Console.WriteLine($"Tile Gid: {play_tiles.Tiles[i].Gid}");
             return play_tiles.Tiles[i].Gid;
         }
 
@@ -289,7 +289,7 @@ namespace Proftaak_Orientatie_Game.World
             if (pos.X < 0 || pos.Y < 0 || pos.X / map.TileWidth >= map.Width || pos.Y / map.TileHeight >= map.Height)
                 return 0;
             int i = (pos.X / map.TileWidth) + (pos.Y / map.TileHeight) * map.Height;
-            //Console.WriteLine($"Tile Gid: {roof_tiles.Tiles[i].Gid}");
+            ////Console.WriteLine($"Tile Gid: {roof_tiles.Tiles[i].Gid}");
             return roof_tiles.Tiles[i].Gid;
         }
     }

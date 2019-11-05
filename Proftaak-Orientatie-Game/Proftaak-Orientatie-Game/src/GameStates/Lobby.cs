@@ -25,7 +25,7 @@ namespace Proftaak_Orientatie_Game.GameStates
             }
             catch (Exception err)
             {
-                Console.WriteLine(err.Message);
+                //Console.WriteLine(err.Message);
                 RequestNewState(new Menu());
             }
 
