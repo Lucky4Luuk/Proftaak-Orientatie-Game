@@ -122,9 +122,9 @@ namespace Proftaak_Orientatie_Game.Entities
         private bool CheckCollision(Vector2f pos)
         {
             //Checks collision with tilemap
-            Vector2i posI = new Vector2i((int)pos.X, (int)pos.Y);
-            int GID = _tilemap.GetTile(posI);
-            return GID > 1 && GID != 69;
+            //Vector2i posI = new Vector2i((int)pos.X, (int)pos.Y);
+            int GID = _tilemap.GetTile(pos);
+            return GID > 1 && GID != 68;
         }
     }
 }

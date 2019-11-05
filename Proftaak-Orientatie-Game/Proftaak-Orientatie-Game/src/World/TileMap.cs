@@ -233,13 +233,11 @@ namespace Proftaak_Orientatie_Game.World
             //Shader.Bind(null);
         }
 
-        public int GetTile(Vector2i pos)
+        public int GetTile(Vector2f posF)
         {
+            Vector2i pos = new Vector2i((int)(posF.X + (float)map.TileWidth / 2f), (int)(posF.Y + (float)map.TileHeight / 2f));
             if (pos.X < 0 || pos.Y < 0 || pos.X / map.TileWidth >= map.Width || pos.Y / map.TileHeight >= map.Height)
-            {
-                Console.WriteLine("NOOOOOOOOOOO");
                 return 0;
-            }
             int i = (pos.X / map.TileWidth) + (pos.Y / map.TileHeight) * map.Height;
             Console.WriteLine($"Tile Gid: {play_tiles.Tiles[i].Gid}");
             return play_tiles.Tiles[i].Gid;
