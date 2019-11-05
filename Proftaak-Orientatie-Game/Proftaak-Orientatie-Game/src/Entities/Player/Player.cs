@@ -25,27 +25,34 @@ namespace Proftaak_Orientatie_Game.Entities.Player
         private readonly Sprite _sprite;
         private readonly IPlayerController _playerController;
 
+        private const float FLASH_TIME = 0.2f;
+        private float _flash;
+
         public Camera Camera { get; set; }
 
         enum Direction { DOWN = 0, RIGHT, LEFT, UP }
         private readonly Animation[] _animations = {
-            new Animation(16, 16, 32, new [] {0,1}),
-            new Animation(16, 16, 32, new [] {2,3}),
-            new Animation(16, 16, 32, new [] {4,5}),
-            new Animation(16, 16, 32, new [] {6,7})
+            new Animation(16, 16, 64, new [] {6,7}),
+            new Animation(16, 16, 64, new [] {2,3}),
+            new Animation(16, 16, 64, new [] {4,5}),
+            new Animation(16, 16, 64, new [] {0,1})
         };
 
         private Direction _currentDirection;
 
-        public Player(Vector2f spawnPositon, IPlayerController playerController, Texture playerTexture, Texture healthBarTexture, EntityManager manager, Camera _camera)
+        private Texture[] _textures;
+
+        public Player(Vector2f spawnPositon, IPlayerController playerController, Texture[] playerTexture, Texture healthBarTexture, EntityManager manager, Camera _camera)
         {
+            _textures = playerTexture;
+
             manager.Add(new HealthBar(healthBarTexture, this));
 
             canBeHitByBullet = true;
 
             _playerController = playerController;
 
-            _sprite = new Sprite(playerTexture) {
+            _sprite = new Sprite {
                 Position = spawnPositon,
                 TextureRect = _animations[(int)Direction.DOWN].GetShape(),
                 Origin = new Vector2f(_animations[0].GetShape().Width * 0.5f, _animations[0].GetShape().Height * 0.5f)
@@ -53,6 +60,11 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             _currentDirection = Direction.DOWN;
 
             Camera = _camera;
+        }
+
+        public void SetId(int id)
+        {
+            _sprite.Texture = _textures[id % _textures.Length];
         }
 
         public override void OnUpdate(float deltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window)
@@ -114,8 +126,13 @@ namespace Proftaak_Orientatie_Game.Entities.Player
             if (_playerController.DeletionMark)
                 MarkForDeletion();
 
-            if(!Active)
+            if (!Active)
+            {
+                if(_playerController.Health != Health)
+                    Hit();
+
                 Health = _playerController.Health;
+            }
         }
 
         public override void OnFixedUpdate(float fixedDeltatime, EntityManager entityManager, ConnectionBuffer buffer, RenderWindow window)
@@ -129,8 +146,19 @@ namespace Proftaak_Orientatie_Game.Entities.Player
                 MarkForDeletion();
         }
 
+        public void Hit()
+        {
+            _flash = 1.0f;
+        }
+
         public override void OnDraw(float deltatime, RenderWindow window)
         {
+            _flash -= deltatime / FLASH_TIME;
+            if (_flash < 0.0f)
+                _flash = 0.0f;
+
+            _sprite.Color = new Color((byte)((1.0f - _flash) * 255), (byte)((1.0f - _flash) * 255), (byte)((1.0f - _flash) * 255));
+
             window.Draw(_sprite);
         }
 

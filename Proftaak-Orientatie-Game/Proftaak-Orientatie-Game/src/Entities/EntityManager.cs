@@ -42,6 +42,7 @@ namespace Proftaak_Orientatie_Game.Entities
             {
                 ActivePlayer.Health -= 10.0f;
                 ActivePlayer.Camera.Shake(0.4f);
+                ActivePlayer.Hit();
             }
 
             Add(new BulletTrail(bullet.Origin, bullet.Direction, distance));

@@ -30,7 +30,13 @@ namespace Proftaak_Orientatie_Game.GameStates
 
         private Connection _serverConnection;
 
-        private Texture playerTexture = new Texture("res/textures/player.png");
+        private Texture[] playerTexture = new Texture[]
+        {
+            new Texture("res/textures/Character1.png"),
+            new Texture("res/textures/Character2.png"),
+            new Texture("res/textures/Character3.png"),
+            new Texture("res/textures/Character4.png"),
+        };
         private Texture healthBarTexture = new Texture("res/textures/healthbar.png");
 
 
