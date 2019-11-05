@@ -14,6 +14,7 @@ namespace Proftaak_Orientatie_Game.World
 {
     class TileMap : Level
     {
+        private TmxLayer floor_tiles;
         private TmxLayer background_tiles;
         private TmxLayer behind_tiles;
         private TmxLayer play_tiles;
@@ -32,11 +33,11 @@ namespace Proftaak_Orientatie_Game.World
         private Sprite canvasSprite;
         private Sprite roofSprite;
 
-        //private Shader shadowShader;
+        private Shader shadowShader;
 
         public TileMap(string filename)
         {
-            LoadTilemap(filename, out background_tiles, out behind_tiles, out play_tiles, out roof_tiles, out map, out tileset);
+            LoadTilemap(filename, out floor_tiles, out background_tiles, out behind_tiles, out play_tiles, out roof_tiles, out map, out tileset);
 
             //ITileset ts = map.Tilesets.First<ITileset>();
             TmxTileset ts = map.Tilesets[0];
@@ -50,11 +51,12 @@ namespace Proftaak_Orientatie_Game.World
             objectCanvas = new RenderTexture((uint)(map.Width * 16), (uint)(map.Height * 16));
             roofCanvas = new RenderTexture((uint)(map.Width * 16), (uint)(map.Height * 16));
 
-            //StreamReader reader = new StreamReader("res/shadow_shader.glsl");
-            //String src = reader.ReadToEnd();
-            //Console.WriteLine(src);
-            //shadowShader = Shader.FromString(null, null, src);
-            //reader.Close();
+            StreamReader reader = new StreamReader("res/shadow_shader.glsl");
+            String src = reader.ReadToEnd();
+            Console.WriteLine("=== SRC ===");
+            Console.WriteLine(src);
+            shadowShader = Shader.FromString(null, null, src);
+            reader.Close();
 
             sprites = new Sprite[map.Width, map.Height];
             for (int x = 0; x < map.Width; x++)
@@ -73,14 +75,15 @@ namespace Proftaak_Orientatie_Game.World
             roofSprite = new Sprite(roofCanvas.Texture);
         }
 
-        static void LoadTilemap(string filename, out TmxLayer background_tiles, out TmxLayer behind_tiles, out TmxLayer play_tiles, out TmxLayer roof_tiles, out TmxMap map, out Tileset tileset)
+        static void LoadTilemap(string filename, out TmxLayer floor_tiles, out TmxLayer background_tiles, out TmxLayer behind_tiles, out TmxLayer play_tiles, out TmxLayer roof_tiles, out TmxMap map, out Tileset tileset)
         {
             map = new TmxMap("res/maps/game map.tmx");
 
-            background_tiles = map.Layers[0];
-            behind_tiles = map.Layers[1];
-            play_tiles = map.Layers[2];
-            roof_tiles = map.Layers[3];
+            floor_tiles = map.Layers[0];
+            background_tiles = map.Layers[1];
+            behind_tiles = map.Layers[2];
+            play_tiles = map.Layers[3];
+            roof_tiles = map.Layers[4];
 
             using (var stream = File.OpenRead("res/tilesets/tileseta.tsx"))
                 tileset = Tileset.FromStream(stream);
@@ -117,7 +120,7 @@ namespace Proftaak_Orientatie_Game.World
                             if (tsTile.VerticalFlip)
                                 scale.Y *= -1f;
                             if (tsTile.DiagonalFlip)
-                                rotation = 90f;
+                                rotation = -90f;
 
                             sprites[x, y].TextureRect = new IntRect(tile.Left, tile.Top, tileset.TileWidth, tileset.TileHeight);
                             sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
@@ -155,7 +158,7 @@ namespace Proftaak_Orientatie_Game.World
                             if (tsTile.VerticalFlip)
                                 scale.Y *= -1f;
                             if (tsTile.DiagonalFlip)
-                                rotation = 90f;
+                                rotation = -90f;
 
                             sprites[x, y].TextureRect = new IntRect(tile.Left, tile.Top, tileset.TileWidth, tileset.TileHeight);
                             sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
@@ -193,7 +196,7 @@ namespace Proftaak_Orientatie_Game.World
                             if (tsTile.VerticalFlip)
                                 scale.Y *= -1f;
                             if (tsTile.DiagonalFlip)
-                                rotation = 90f;
+                                rotation = -90f;
 
                             sprites[x, y].TextureRect = new IntRect(tile.Left, tile.Top, tileset.TileWidth, tileset.TileHeight);
                             sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
@@ -231,8 +234,8 @@ namespace Proftaak_Orientatie_Game.World
                                 scale.X *= -1f;
                             if (tsTile.VerticalFlip)
                                 scale.Y *= -1f;
-                            if (tsTile.DiagonalFlip)
-                                rotation = 90f;
+                            if (tsTile.DiagonalFlip) //🛹
+                                rotation = -90f;
 
                             sprites[x, y].TextureRect = new IntRect(tile.Left, tile.Top, tileset.TileWidth, tileset.TileHeight);
                             sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
@@ -257,9 +260,12 @@ namespace Proftaak_Orientatie_Game.World
             window.Draw(canvasSprite);
         }
 
-        public void DrawRoof(float deltatime, RenderWindow window)
+        public void DrawRoof(float deltatime, RenderWindow window, bool indoors)
         {
+            if (indoors)
+                Shader.Bind(shadowShader);
             window.Draw(roofSprite);
+            Shader.Bind(null);
         }
 
         public int GetTile(Vector2f posF)
