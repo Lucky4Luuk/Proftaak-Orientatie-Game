@@ -20,8 +20,19 @@ namespace Proftaak_Orientatie_Game.Entities
 
         public void ShootBullet(bool myBullet, int origin, Bullet.Bullet bullet, float range)
         {
+            float delta = Math.Min(_tilemap.GetTileSize().X, _tilemap.GetTileSize().Y);
+
             Player.Player playerHit = null;
             float distance = range;
+
+            for (float f = 0; f < distance; f += delta)
+            {
+                if(CheckCollision(bullet.Origin + bullet.Direction * f))
+                {
+                    distance = f;
+                    break;
+                }
+            }
 
             foreach (var player in _entities.OfType<Player.Player>())
             {
