@@ -114,8 +114,12 @@ namespace Proftaak_Orientatie_Game.GameStates
             camera.viewport.Size = (Vector2f)window.Size / scale;
             camera.SetTargetPosition(player.getPosition());
             window.SetView(camera.viewport);
-            _curLevel.OnDraw(deltatime, window, player.getPosition());
+            _curLevel.OnDraw(deltatime, window);
             _entityManager.Draw(deltatime, window);
+            if (_curLevel.GetRoofTile(player.getPosition()) < 1)
+            {
+                _curLevel.DrawRoof(deltatime, window);
+            }
         }
 
         public override void OnTick()

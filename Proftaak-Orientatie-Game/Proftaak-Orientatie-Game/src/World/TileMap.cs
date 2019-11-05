@@ -28,7 +28,9 @@ namespace Proftaak_Orientatie_Game.World
 
         private RenderTexture canvas;
         private RenderTexture objectCanvas;
+        private RenderTexture roofCanvas;
         private Sprite canvasSprite;
+        private Sprite roofSprite;
 
         //private Shader shadowShader;
 
@@ -46,6 +48,7 @@ namespace Proftaak_Orientatie_Game.World
 
             canvas = new RenderTexture((uint)(map.Width * 16), (uint)(map.Height * 16));
             objectCanvas = new RenderTexture((uint)(map.Width * 16), (uint)(map.Height * 16));
+            roofCanvas = new RenderTexture((uint)(map.Width * 16), (uint)(map.Height * 16));
 
             //StreamReader reader = new StreamReader("res/shadow_shader.glsl");
             //String src = reader.ReadToEnd();
@@ -67,19 +70,21 @@ namespace Proftaak_Orientatie_Game.World
             RenderToCanvas();
 
             canvasSprite = new Sprite(canvas.Texture);
+            roofSprite = new Sprite(roofCanvas.Texture);
         }
 
         static void LoadTilemap(string filename, out TmxLayer background_tiles, out TmxLayer behind_tiles, out TmxLayer play_tiles, out TmxLayer roof_tiles, out TmxMap map, out Tileset tileset)
         {
-            map = new TmxMap("res/maps/town_map.tmx");
+            map = new TmxMap("res/maps/game map.tmx");
 
             background_tiles = map.Layers[0];
             behind_tiles = map.Layers[1];
             play_tiles = map.Layers[2];
             roof_tiles = map.Layers[3];
 
-            using (var stream = File.OpenRead("res/tilesets/tilesetb.tsx"))
+            using (var stream = File.OpenRead("res/tilesets/tileseta.tsx"))
                 tileset = Tileset.FromStream(stream);
+            Console.WriteLine($"{tileset.Name}");
         }
 
         private void RenderToCanvas()
@@ -91,146 +96,170 @@ namespace Proftaak_Orientatie_Game.World
                     TmxLayerTile tsTile = background_tiles.Tiles[i];
                     if (tsTile.Gid > 1)
                     {
-                        Tile tile = tileset[tsTile.Gid - 1];
+                        try
+                        {
+                            Tile tile = tileset[tsTile.Gid - 1];
 
-                        /*
-                        float rotation = 0f;
-                        if (tile.Orientation == TileOrientation.Rotate90CW)
-                            rotation = 90f;
-                        if (tile.Orientation == TileOrientation.Rotate180CCW)
-                            rotation = 180f;
-                        if (tile.Orientation == TileOrientation.Rotate270CCW)
-                            rotation = -90f;
-                        */
+                            /*
+                            float rotation = 0f;
+                            if (tile.Orientation == TileOrientation.Rotate90CW)
+                                rotation = 90f;
+                            if (tile.Orientation == TileOrientation.Rotate180CCW)
+                                rotation = 180f;
+                            if (tile.Orientation == TileOrientation.Rotate270CCW)
+                                rotation = -90f;
+                            */
 
-                        Vector2f scale = new Vector2f(1f, 1f);
-                        float rotation = 0f;
-                        if (tsTile.HorizontalFlip)
-                            scale.X *= -1f;
-                        if (tsTile.VerticalFlip)
-                            scale.Y *= -1f;
-                        if (tsTile.DiagonalFlip)
-                            rotation = 90f;
+                            Vector2f scale = new Vector2f(1f, 1f);
+                            float rotation = 0f;
+                            if (tsTile.HorizontalFlip)
+                                scale.X *= -1f;
+                            if (tsTile.VerticalFlip)
+                                scale.Y *= -1f;
+                            if (tsTile.DiagonalFlip)
+                                rotation = 90f;
 
-                        sprites[x, y].TextureRect = new IntRect(tile.Left, tile.Top, tileset.TileWidth, tileset.TileHeight);
-                        sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
-                        sprites[x, y].Rotation = rotation;
-                        sprites[x, y].Scale = scale;
-                        canvas.Draw(sprites[x, y]);
+                            sprites[x, y].TextureRect = new IntRect(tile.Left, tile.Top, tileset.TileWidth, tileset.TileHeight);
+                            sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
+                            sprites[x, y].Rotation = rotation;
+                            sprites[x, y].Scale = scale;
+                            canvas.Draw(sprites[x, y]);
+                        } catch (Exception)
+                        {
+                            Console.WriteLine($"Position: [{x}; {y}] - {tsTile.Gid - 1}");
+                        }
                     }
 
 
                     tsTile = behind_tiles.Tiles[i];
                     if (tsTile.Gid > 1)
                     {
-                        Tile tile = tileset[tsTile.Gid - 1];
+                        try
+                        {
+                            Tile tile = tileset[tsTile.Gid - 1];
 
-                        /*
-                        float rotation = 0f;
-                        if (tile.Orientation == TileOrientation.Rotate90CW)
-                            rotation = 90f;
-                        if (tile.Orientation == TileOrientation.Rotate180CCW)
-                            rotation = 180f;
-                        if (tile.Orientation == TileOrientation.Rotate270CCW)
-                            rotation = -90f;
-                        */
+                            /*
+                            float rotation = 0f;
+                            if (tile.Orientation == TileOrientation.Rotate90CW)
+                                rotation = 90f;
+                            if (tile.Orientation == TileOrientation.Rotate180CCW)
+                                rotation = 180f;
+                            if (tile.Orientation == TileOrientation.Rotate270CCW)
+                                rotation = -90f;
+                            */
 
-                        Vector2f scale = new Vector2f(1f, 1f);
-                        float rotation = 0f;
-                        if (tsTile.HorizontalFlip)
-                            scale.X *= -1f;
-                        if (tsTile.VerticalFlip)
-                            scale.Y *= -1f;
-                        if (tsTile.DiagonalFlip)
-                            rotation = 90f;
+                            Vector2f scale = new Vector2f(1f, 1f);
+                            float rotation = 0f;
+                            if (tsTile.HorizontalFlip)
+                                scale.X *= -1f;
+                            if (tsTile.VerticalFlip)
+                                scale.Y *= -1f;
+                            if (tsTile.DiagonalFlip)
+                                rotation = 90f;
 
-                        sprites[x, y].TextureRect = new IntRect(tile.Left, tile.Top, tileset.TileWidth, tileset.TileHeight);
-                        sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
-                        sprites[x, y].Rotation = rotation;
-                        sprites[x, y].Scale = scale;
-                        canvas.Draw(sprites[x, y]);
+                            sprites[x, y].TextureRect = new IntRect(tile.Left, tile.Top, tileset.TileWidth, tileset.TileHeight);
+                            sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
+                            sprites[x, y].Rotation = rotation;
+                            sprites[x, y].Scale = scale;
+                            canvas.Draw(sprites[x, y]);
+                        } catch (Exception)
+                        {
+                            Console.WriteLine($"Position: [{x}; {y}] - {tsTile.Gid - 1}");
+                        }
                     }
 
 
                     tsTile = play_tiles.Tiles[i];
                     if (tsTile.Gid > 1)
                     {
-                        Tile tile = tileset[tsTile.Gid - 1];
+                        try
+                        {
+                            Tile tile = tileset[tsTile.Gid - 1];
 
-                        /*
-                        float rotation = 0f;
-                        if (tile.Orientation == TileOrientation.Rotate90CW)
-                            rotation = 90f;
-                        if (tile.Orientation == TileOrientation.Rotate180CCW)
-                            rotation = 180f;
-                        if (tile.Orientation == TileOrientation.Rotate270CCW)
-                            rotation = -90f;
-                        */
+                            /*
+                            float rotation = 0f;
+                            if (tile.Orientation == TileOrientation.Rotate90CW)
+                                rotation = 90f;
+                            if (tile.Orientation == TileOrientation.Rotate180CCW)
+                                rotation = 180f;
+                            if (tile.Orientation == TileOrientation.Rotate270CCW)
+                                rotation = -90f;
+                            */
 
-                        Vector2f scale = new Vector2f(1f, 1f);
-                        float rotation = 0f;
-                        if (tsTile.HorizontalFlip)
-                            scale.X *= -1f;
-                        if (tsTile.VerticalFlip)
-                            scale.Y *= -1f;
-                        if (tsTile.DiagonalFlip)
-                            rotation = 90f;
+                            Vector2f scale = new Vector2f(1f, 1f);
+                            float rotation = 0f;
+                            if (tsTile.HorizontalFlip)
+                                scale.X *= -1f;
+                            if (tsTile.VerticalFlip)
+                                scale.Y *= -1f;
+                            if (tsTile.DiagonalFlip)
+                                rotation = 90f;
 
-                        sprites[x, y].TextureRect = new IntRect(tile.Left, tile.Top, tileset.TileWidth, tileset.TileHeight);
-                        sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
-                        sprites[x, y].Rotation = rotation;
-                        sprites[x, y].Scale = scale;
-                        canvas.Draw(sprites[x, y]);
-                        objectCanvas.Draw(sprites[x, y]);
+                            sprites[x, y].TextureRect = new IntRect(tile.Left, tile.Top, tileset.TileWidth, tileset.TileHeight);
+                            sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
+                            sprites[x, y].Rotation = rotation;
+                            sprites[x, y].Scale = scale;
+                            canvas.Draw(sprites[x, y]);
+                            objectCanvas.Draw(sprites[x, y]);
+                        } catch (Exception)
+                        {
+                            Console.WriteLine($"Position: [{x}; {y}] - {tsTile.Gid - 1}");
+                        }
                     }
 
 
                     tsTile = roof_tiles.Tiles[i];
                     if (tsTile.Gid > 1)
                     {
-                        Tile tile = tileset[tsTile.Gid - 1];
+                        try
+                        {
+                            Tile tile = tileset[tsTile.Gid - 1];
 
-                        /*
-                        float rotation = 0f;
-                        if (tile.Orientation == TileOrientation.Rotate90CW)
-                            rotation = 90f;
-                        if (tile.Orientation == TileOrientation.Rotate180CCW)
-                            rotation = 180f;
-                        if (tile.Orientation == TileOrientation.Rotate270CCW)
-                            rotation = -90f;
-                        */
+                            /*
+                            float rotation = 0f;
+                            if (tile.Orientation == TileOrientation.Rotate90CW)
+                                rotation = 90f;
+                            if (tile.Orientation == TileOrientation.Rotate180CCW)
+                                rotation = 180f;
+                            if (tile.Orientation == TileOrientation.Rotate270CCW)
+                                rotation = -90f;
+                            */
 
-                        Vector2f scale = new Vector2f(1f, 1f);
-                        float rotation = 0f;
-                        if (tsTile.HorizontalFlip)
-                            scale.X *= -1f;
-                        if (tsTile.VerticalFlip)
-                            scale.Y *= -1f;
-                        if (tsTile.DiagonalFlip)
-                            rotation = 90f;
+                            Vector2f scale = new Vector2f(1f, 1f);
+                            float rotation = 0f;
+                            if (tsTile.HorizontalFlip)
+                                scale.X *= -1f;
+                            if (tsTile.VerticalFlip)
+                                scale.Y *= -1f;
+                            if (tsTile.DiagonalFlip)
+                                rotation = 90f;
 
-                        sprites[x, y].TextureRect = new IntRect(tile.Left, tile.Top, tileset.TileWidth, tileset.TileHeight);
-                        sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
-                        sprites[x, y].Rotation = rotation;
-                        sprites[x, y].Scale = scale;
-                        canvas.Draw(sprites[x, y]);
+                            sprites[x, y].TextureRect = new IntRect(tile.Left, tile.Top, tileset.TileWidth, tileset.TileHeight);
+                            sprites[x, y].Origin = new Vector2f(tileset.TileWidth / 2f, tileset.TileHeight / 2f);
+                            sprites[x, y].Rotation = rotation;
+                            sprites[x, y].Scale = scale;
+                            roofCanvas.Draw(sprites[x, y]);
+                        } catch (Exception)
+                        {
+                            Console.WriteLine($"Position: [{x}; {y}] - {tsTile.Gid - 1}");
+                        }
                     }
                 }
             }
 
             canvas.Display();
             objectCanvas.Display();
+            roofCanvas.Display();
         }
 
-        public void OnDraw(float deltatime, RenderWindow window, Vector2f playerPos)
+        public override void OnDraw(float deltatime, RenderWindow window)
         {
-            //shadowShader.SetUniform("texture", Shader.CurrentTexture);
-            //shadowShader.SetUniform("shadowLayer", objectCanvas.Texture);
-            //shadowShader.SetUniform("playerCoords", playerPos);
-            //shadowShader.SetUniform("layerSize", new Vector2f(map.Width * map.TileWidth, map.Height * map.TileHeight));
-            //Shader.Bind(shadowShader);
             window.Draw(canvasSprite);
-            //Shader.Bind(null);
+        }
+
+        public void DrawRoof(float deltatime, RenderWindow window)
+        {
+            window.Draw(roofSprite);
         }
 
         public int GetTile(Vector2f posF)
@@ -239,8 +268,18 @@ namespace Proftaak_Orientatie_Game.World
             if (pos.X < 0 || pos.Y < 0 || pos.X / map.TileWidth >= map.Width || pos.Y / map.TileHeight >= map.Height)
                 return 0;
             int i = (pos.X / map.TileWidth) + (pos.Y / map.TileHeight) * map.Height;
-            Console.WriteLine($"Tile Gid: {play_tiles.Tiles[i].Gid}");
+            //Console.WriteLine($"Tile Gid: {play_tiles.Tiles[i].Gid}");
             return play_tiles.Tiles[i].Gid;
+        }
+
+        public int GetRoofTile(Vector2f posF)
+        {
+            Vector2i pos = new Vector2i((int)(posF.X + (float)map.TileWidth / 2f), (int)(posF.Y + (float)map.TileHeight / 2f));
+            if (pos.X < 0 || pos.Y < 0 || pos.X / map.TileWidth >= map.Width || pos.Y / map.TileHeight >= map.Height)
+                return 0;
+            int i = (pos.X / map.TileWidth) + (pos.Y / map.TileHeight) * map.Height;
+            //Console.WriteLine($"Tile Gid: {roof_tiles.Tiles[i].Gid}");
+            return roof_tiles.Tiles[i].Gid;
         }
     }
 }
