@@ -13,15 +13,18 @@ namespace Proftaak_Orientatie_Game.Entities.Player
     class GamepadController : IPlayerController
     {
         private const float TOTAL_SHOOT_COOLDOWN = 0.4f;
-        private const float REPRESS_COOLDOWN_REDUCTION = 0.0f;
+        private const float REPRESS_COOLDOWN_REDUCTION = 0.15f;
         private float _shootCooldown;
         private bool _isShootPressed;
 
+        private EntityManager _manager;
+
         private readonly GamepadInputManager _inputManager;
 
-        public GamepadController(GamepadInputManager inputManager)
+        public GamepadController(GamepadInputManager inputManager, EntityManager entityManager)
         {
             _inputManager = inputManager;
+            _manager = entityManager;
         }
 
         public override void FixedUpdate(RenderWindow window, float deltatime)
@@ -40,7 +43,27 @@ namespace Proftaak_Orientatie_Game.Entities.Player
                     delta *= deltatime;
 
                     // Start moving
-                    Position = new Vector2f(Position.X + delta.X, Position.Y + delta.Y);
+                    Position = new Vector2f(Position.X + delta.X, Position.Y);
+
+                    bool collision = false;
+                    for (int x = -1; x <= 1; x += 2)
+                    for (int y = -1; y <= 1; y += 2)
+                        if (_manager.CheckCollision(new Vector2f(Position.X + x * 2, Position.Y + y * 2)))
+                            collision = true;
+
+                    if (collision)
+                        Position = new Vector2f(Position.X - delta.X, Position.Y);
+
+                    Position = new Vector2f(Position.X, Position.Y + delta.Y);
+
+                    collision = false;
+                    for (int x = -1; x <= 1; x += 2)
+                    for (int y = -1; y <= 1; y += 2)
+                        if (_manager.CheckCollision(new Vector2f(Position.X + x * 2, Position.Y + y * 2)))
+                            collision = true;
+
+                    if (collision)
+                        Position = new Vector2f(Position.X, Position.Y - delta.Y);
                     Velocity = new Vector2f(delta.X, delta.Y);
                 }
             }
@@ -56,7 +79,7 @@ namespace Proftaak_Orientatie_Game.Entities.Player
                 Direction = _inputManager.StickRight / (float)Math.Sqrt(_inputManager.StickRight.X * _inputManager.StickRight.X + 
                                                                         _inputManager.StickRight.Y * _inputManager.StickRight.Y);
 
-                bool shoot = Keyboard.IsKeyPressed(Keyboard.Key.Space);//_inputManager.Button;
+                bool shoot = _inputManager.Button;
 
 
                 _shootCooldown -= deltatime;

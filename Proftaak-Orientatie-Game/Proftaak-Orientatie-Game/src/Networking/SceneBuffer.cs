@@ -40,6 +40,7 @@ namespace Proftaak_Orientatie_Game.Networking
                 PlayerSpawnPacket packet = Packet.Deserialize<PlayerSpawnPacket>(data);
                 MyId = packet.id;
                 _entityManager.ActivePlayer.SetId(MyId);
+                _entityManager.ActivePlayer.setPosition(packet.position);
             }
 
             if (Packet.GetType(data) == PACKET_TYPES.PLAYER_UPDATE)

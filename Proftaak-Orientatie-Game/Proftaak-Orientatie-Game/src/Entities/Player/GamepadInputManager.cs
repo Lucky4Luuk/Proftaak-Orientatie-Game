@@ -52,16 +52,16 @@ namespace Proftaak_Orientatie_Game.Entities.Player
                 switch (header)
                 {
                     case 0:
-                        StickLeft = new Vector2f(-(value / 16.0f - 1.0f), StickLeft.Y);
+                        StickLeft = new Vector2f(value == 31 ? -1.0f : (value == 0 ? 1.0f : 0.0f), StickLeft.Y );
                         break;
                     case 1:
-                        StickLeft = new Vector2f(StickLeft.X, -(value / 16.0f - 1.0f));
+                        StickLeft = new Vector2f(StickLeft.X, value == 31 ? -1.0f : (value == 0 ? 1.0f : 0.0f));
                         break;
                     case 2:
-                        StickRight = new Vector2f(value / 16.0f - 1.0f, StickRight.Y);
+                        StickRight = new Vector2f(value == 31 ? 1.0f : (value == 0 ? -1.0f : 0.0f), StickRight.Y);
                         break;
                     case 3:
-                        StickRight = new Vector2f(StickRight.X, value / 16.0f - 1.0f);
+                        StickRight = new Vector2f(StickRight.X, value == 31 ? 1.0f : (value == 0 ? -1.0f : 0.0f));
                         break;
                     case 4:
                         Button = value != 0;
